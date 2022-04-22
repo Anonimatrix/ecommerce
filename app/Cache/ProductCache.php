@@ -5,6 +5,7 @@ namespace App\Cache;
 use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository as Cache;
+use Xkairo\CacheRepositoryLaravel\Cache\BaseCache;
 
 class ProductCache extends BaseCache implements ProductRepositoryInterface
 {

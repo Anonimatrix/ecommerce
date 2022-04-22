@@ -5,6 +5,7 @@ namespace App\Cache;
 use App\Repositories\TagRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository as Cache;
+use Xkairo\CacheRepositoryLaravel\Cache\BaseCache;
 
 class TagCache extends BaseCache implements TagRepositoryInterface
 {
@@ -14,5 +15,13 @@ class TagCache extends BaseCache implements TagRepositoryInterface
     {
         parent::__construct($repository, $cache, $request, 'tag');
         $this->repository = $repository;
+    }
+
+    public function createMany(array $titles)
+    {
+        $keyNames = implode('-', $titles);
+        $this->cache->tags([$this->key . 's'])->remember($this->key .  's-' . $keyNames, self::TTL, function () use ($titles) {
+            return $this->repository->createMany($titles);
+        });
     }
 }

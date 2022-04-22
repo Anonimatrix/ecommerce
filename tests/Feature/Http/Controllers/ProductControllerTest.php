@@ -83,6 +83,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $tag = Tag::factory()->create();
 
         $data = [
             'subcategorie_id' => Subcategorie::factory()->create()->id,
@@ -92,7 +93,7 @@ class ProductControllerTest extends TestCase
             'photos' => $files,
             'stock' => $this->faker->numberBetween(1, 20),
             'paused_at' => null,
-            'tags_ids' => [Tag::factory()->create()->id]
+            'tags_titles' => [$tag->title]
         ];
 
         $this->actingAs($user)->post(route('products.store'), $data)

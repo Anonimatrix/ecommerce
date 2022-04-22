@@ -3,10 +3,9 @@
 namespace App\Repositories\EloquentRepositories;
 
 use App\Models\Product;
-use App\Repositories\BaseRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {

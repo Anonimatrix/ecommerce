@@ -4,6 +4,7 @@ namespace App\Repositories\EloquentRepositories;
 
 use App\Models\Categorie;
 use App\Repositories\CategorieRepositoryInterface;
+use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 
 class CategorieRepository extends BaseRepository implements CategorieRepositoryInterface
 {

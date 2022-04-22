@@ -5,6 +5,7 @@ namespace App\Cache;
 use App\Repositories\CategorieRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository as Cache;
+use Xkairo\CacheRepositoryLaravel\Cache\BaseCache;
 
 class CategorieCache extends BaseCache implements CategorieRepositoryInterface
 {

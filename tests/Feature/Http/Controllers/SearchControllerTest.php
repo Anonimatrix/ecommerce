@@ -67,7 +67,7 @@ class SearchControllerTest extends TestCase
                     'searches',
                     1,
                     fn ($json) =>
-                    $json->where('user_id', (string) $user->id)
+                    $json->where('user_id', $user->id)
                         ->etc()
                 )
             );
@@ -113,7 +113,7 @@ class SearchControllerTest extends TestCase
                     'suggestions',
                     6,
                     fn ($json) =>
-                    $json->where('user_id', (string) $user->id)
+                    $json->where('user_id', $user->id)
                         ->etc()
                 )
             );

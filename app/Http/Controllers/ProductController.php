@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cache\ProductCache;
+use App\Cache\TagCache;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -19,6 +20,7 @@ class ProductController extends Controller
     use HasPhotos;
 
     protected $repository;
+    protected $tagRepository;
     protected $product;
 
     public function setProduct(Request $request)
@@ -30,9 +32,10 @@ class ProductController extends Controller
         }
     }
 
-    public function __construct(ProductCache $productCache, Request $request)
+    public function __construct(ProductCache $productCache, TagCache $tagCache, Request $request)
     {
         $this->repository = $productCache;
+        $this->tagRepository = $tagCache;
         $this->setProduct($request);
     }
 
@@ -70,7 +73,9 @@ class ProductController extends Controller
 
         $this->uploadPhotos($product, $request->photos);
 
-        $product->tags()->sync($request->input('tags_ids'));
+        $tags_ids = $this->tagRepository->createMany($request->input('tags_titles'));
+
+        $product->tags()->sync($tags_ids);
 
         return redirect()->back();
     }
