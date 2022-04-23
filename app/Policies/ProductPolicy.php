@@ -53,7 +53,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product)
     {
-        return $user->role->name === 'admin' || $product->user->id === $user->id;
+        return $user->can('edit products') || $product->user->id === $user->id;
     }
 
     /**
@@ -65,7 +65,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product)
     {
-        return $user->role->name === 'admin' || $product->user->id === $user->id;
+        return $user->can('delete products') || $product->user->id === $user->id;
     }
 
     /**
@@ -89,11 +89,11 @@ class ProductPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->role->name === 'admin';
+        return $user->can('force delete products');
     }
 
     public function pause(User $user, Product $product)
     {
-        return $user->role->name === 'admin' || $product->user->id === $user->id;
+        return $user->can('pause products') || $product->user->id === $user->id;
     }
 }

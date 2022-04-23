@@ -148,7 +148,16 @@ class ProductController extends Controller
     {
         $this->authorize('delete', $this->product);
 
-        Auth::user()->role->name === 'admin' ? $this->product->forceDelete() : $this->product->delete();
+        $this->product->delete();
+
+        return redirect()->back();
+    }
+
+    public function forceDestroy()
+    {
+        $this->authorize('forceDelete', $this->product);
+
+        $this->product->forceDelete();
 
         return redirect()->back();
     }
