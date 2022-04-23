@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use App\Models\Role;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class ProductTagSeeder extends Seeder
@@ -15,7 +15,7 @@ class ProductTagSeeder extends Seeder
      */
     public function run()
     {
-        $tags = Role::all();
+        $tags = Tag::all();
 
         Product::all()->each(function ($products) use ($tags) {
             $products->tags()->sync(

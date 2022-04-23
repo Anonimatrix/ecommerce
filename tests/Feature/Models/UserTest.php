@@ -12,17 +12,6 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_belongs_to_role()
-    {
-        $user = User::factory()->create();
-
-        $this->assertInstanceOf(Role::class, $user->role);
-    }
 
     public function test_has_many_products()
     {

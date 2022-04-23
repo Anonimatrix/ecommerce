@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
-            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }
