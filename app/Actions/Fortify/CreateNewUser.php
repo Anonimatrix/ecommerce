@@ -34,8 +34,7 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'username' => $input['username'],
             'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-            'role_id' => Role::where('name', Config::get('constants.custom_role'))->latest()
+            'password' => Hash::make($input['password'])
         ]);
     }
 }
