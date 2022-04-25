@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
@@ -29,6 +30,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::resource('products', ProductController::class)->parameters([
     'products' => 'product_id'
 ])->only(['show', 'index']);
+
+Route::resource('roles', RoleController::class)->parameters([
+    'roles' => 'role_id'
+])->except(['show']);
 
 Route::get('products-search', [ProductController::class, 'search'])->name('products.search');
 
