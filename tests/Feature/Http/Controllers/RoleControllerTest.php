@@ -15,6 +15,13 @@ use Tests\TestCase;
 class RoleControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+    }
+
     /**
      * A basic feature test example.
      *
@@ -22,7 +29,6 @@ class RoleControllerTest extends TestCase
      */
     public function test_store()
     {
-        $this->seed(RoleSeeder::class);
 
         $user = User::factory()->create();
 
@@ -45,7 +51,7 @@ class RoleControllerTest extends TestCase
 
     public function test_store_policy()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -66,7 +72,7 @@ class RoleControllerTest extends TestCase
 
     public function test_create()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -87,7 +93,7 @@ class RoleControllerTest extends TestCase
 
     public function test_destroy()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -117,7 +123,7 @@ class RoleControllerTest extends TestCase
 
     public function test_index()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -138,7 +144,7 @@ class RoleControllerTest extends TestCase
 
     public function test_index_policy()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $this->get(route('roles.index'))
             ->assertStatus(403);
@@ -146,7 +152,7 @@ class RoleControllerTest extends TestCase
 
     public function test_update()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -171,7 +177,7 @@ class RoleControllerTest extends TestCase
 
     public function test_update_policy()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $role = Role::create(['name' => 'role']);
 
@@ -188,7 +194,7 @@ class RoleControllerTest extends TestCase
 
     public function test_edit()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $user = User::factory()->create();
 
@@ -211,7 +217,7 @@ class RoleControllerTest extends TestCase
 
     public function test_edit_policy()
     {
-        $this->seed(RoleSeeder::class);
+
 
         $role = Role::create(['name' => 'role']);
 

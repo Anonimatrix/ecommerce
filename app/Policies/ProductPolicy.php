@@ -41,7 +41,7 @@ class ProductPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return $user->can('create products');
     }
 
     /**
@@ -53,7 +53,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product)
     {
-        return $user->can('edit products') || $product->user->id === $user->id;
+        return ($user->can('edit own products') && $product->user->id === $user->id) || $user->can('edit foreign products');
     }
 
     /**
@@ -65,7 +65,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product)
     {
-        return $user->can('delete products') || $product->user->id === $user->id;
+        return ($user->can('delete own products') && $product->user->id === $user->id) || $user->can('delete foreign products');
     }
 
     /**
@@ -77,7 +77,7 @@ class ProductPolicy
      */
     public function restore(User $user)
     {
-        return $user->role->name === 'admin';
+        return $user->can('restore foreign products');
     }
 
     /**
@@ -89,11 +89,11 @@ class ProductPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('force delete products');
+        return $user->can('force delete foreign products');
     }
 
     public function pause(User $user, Product $product)
     {
-        return $user->can('pause products') || $product->user->id === $user->id;
+        return ($user->can('pause own products') && $product->user->id === $user->id) || $user->can('pause foreign products');
     }
 }

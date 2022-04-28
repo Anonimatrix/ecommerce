@@ -15,18 +15,36 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+        //Permissions roles
         Permission::create(['name' => 'create roles']);
         Permission::create(['name' => 'edit roles']);
         Permission::create(['name' => 'remove roles']);
         Permission::create(['name' => 'view roles']);
+
+        //Permissions products user
+        Permission::create(['name' => 'create own products']);
+        Permission::create(['name' => 'pause own products']);
+        Permission::create(['name' => 'edit own products']);
+        Permission::create(['name' => 'delete own products']);
+
+        //Permissions products admin
+        Permission::create(['name' => 'create foreign products']);
+        Permission::create(['name' => 'pause foreign products']);
+        Permission::create(['name' => 'edit foreign products']);
+        Permission::create(['name' => 'delete foreign products']);
+        Permission::create(['name' => 'force delete foreign products']);
+        Permission::create(['name' => 'restore foreign products']);
 
         $roleManager = Role::create(['name' => 'role-manager']);
         $roleUser = Role::create(['name' => 'user']);
         $roleAdmin = Role::create(['name' => 'admin']);
 
         $permissionsManager = Permission::where('name', 'LIKE', '%roles%')->get();
+        $permissionsOwnProducts = Permission::where('name', 'LIKE', '%own products%')->get();
+        $permissionsForeignProducts = Permission::where('name', 'LIKE', '%foreign products%')->get();
 
         $roleManager->syncPermissions($permissionsManager);
-        $roleAdmin->syncPermissions($permissionsManager);
+        $roleAdmin->syncPermissions([$permissionsManager, $permissionsOwnProducts, $permissionsForeignProducts]);
+        $roleUser->syncPermissions($permissionsOwnProducts);
     }
 }

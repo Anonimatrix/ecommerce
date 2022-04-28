@@ -6294,12 +6294,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Anonimatrix/cache-repository-laravel.git",
-                "reference": "be82c8d57b15dec43b1f350bc588b984cfbfcc1d"
+                "reference": "39c2f1e9015e4ce90a97b6bfb27799fedc6ecf26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Anonimatrix/cache-repository-laravel/zipball/be82c8d57b15dec43b1f350bc588b984cfbfcc1d",
-                "reference": "be82c8d57b15dec43b1f350bc588b984cfbfcc1d",
+                "url": "https://api.github.com/repos/Anonimatrix/cache-repository-laravel/zipball/39c2f1e9015e4ce90a97b6bfb27799fedc6ecf26",
+                "reference": "39c2f1e9015e4ce90a97b6bfb27799fedc6ecf26",
                 "shasum": ""
             },
             "require": {
@@ -6354,7 +6354,7 @@
                 "issues": "https://github.com/Anonimatrix/cache-repository-laravel/issues",
                 "source": "https://github.com/Anonimatrix/cache-repository-laravel/tree/main"
             },
-            "time": "2022-04-21T02:39:19+00:00"
+            "time": "2022-04-25T23:02:03+00:00"
         }
     ],
     "packages-dev": [

@@ -2,12 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Cache\SubcategorieCacheRepository;
 use App\Models\Subcategorie;
 use App\Http\Requests\StoreSubcategorieRequest;
 use App\Http\Requests\UpdateSubcategorieRequest;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SubcategorieController extends Controller
 {
+    protected $repository;
+    protected $subcategorie;
+
+    public function setSubcategorie(Request $request)
+    {
+        $subcategorie_id = $request->route('subcategorie_id');
+
+        if ($subcategorie_id) {
+            $this->subcategorie = $this->repository?->getById($subcategorie_id);
+        }
+    }
+
+    public function __construct(SubcategorieCacheRepository $subcategorieCache, Request $request)
+    {
+        $this->repository = $subcategorieCache;
+        $this->setSubcategorie($request);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,9 +66,11 @@ class SubcategorieController extends Controller
      * @param  \App\Models\Subcategorie  $subcategorie
      * @return \Illuminate\Http\Response
      */
-    public function show(Subcategorie $subcategorie)
+    public function show()
     {
-        //
+        $products = $this->subcategorie->products()->paginate(10);
+
+        return Inertia::render('Subcategorie/Show', ['products' => $products, 'subcategorie' => $this->subcategorie]);
     }
 
     /**

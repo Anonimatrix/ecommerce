@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SubcategorieController;
 use Inertia\Inertia;
 
 /*
@@ -36,6 +37,8 @@ Route::resource('roles', RoleController::class)->parameters([
 ])->except(['show']);
 
 Route::get('products-search', [ProductController::class, 'search'])->name('products.search');
+
+Route::get('subcategories/{subcategorie_id}', [SubcategorieController::class, 'show']);
 
 Route::resource('categories', CategorieController::class);
 

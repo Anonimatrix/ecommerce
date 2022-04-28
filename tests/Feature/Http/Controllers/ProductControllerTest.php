@@ -12,11 +12,18 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Database\Seeders\RoleSeeder;
 
 class ProductControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+    }
 
     public function test_authorization()
     {
@@ -82,6 +89,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
         $tag = Tag::factory()->create();
 
         $data = [
@@ -116,6 +124,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $data = [
             'subcategorie_id' => Subcategorie::factory()->create(),
@@ -136,6 +145,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
@@ -153,6 +163,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory()->create();
 
@@ -179,6 +190,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
@@ -215,6 +227,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
@@ -241,6 +254,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory()->create();
 
@@ -263,6 +277,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory()->create();
 
@@ -285,6 +300,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
@@ -300,6 +316,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory()->create();
 
@@ -313,6 +330,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $this->actingAs($user)->get(route('products.create'))
             ->assertSuccessful()
@@ -328,6 +346,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
@@ -346,6 +365,7 @@ class ProductControllerTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user 
          */
         $user = User::factory()->create();
+        $user->assignRole('user');
 
         $product = Product::factory()->create();
 
