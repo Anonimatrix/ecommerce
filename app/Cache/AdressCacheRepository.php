@@ -2,12 +2,13 @@
 
 namespace App\Cache;
 
+use App\Models\User;
 use App\Repositories\AdressRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository as Cache;
 use Xkairo\CacheRepositoryLaravel\Cache\BaseCache;
 
-class AdressCache extends BaseCache implements AdressRepositoryInterface
+class AdressCacheRepository extends BaseCache implements AdressRepositoryInterface
 {
     protected $repository;
 
@@ -15,5 +16,12 @@ class AdressCache extends BaseCache implements AdressRepositoryInterface
     {
         parent::__construct($repository, $cache, $request, 'adress');
         $this->repository = $repository;
+    }
+
+    public function paginatedUserAdresses(int $quantity, User $user)
+    {
+        return $this->cache->tags([$this->key . 's'])->remember('user' . $this->key . 's', self::TTL, function () use ($quantity, $user) {
+            return $this->repository->paginatedUserAdresses($quantity, $user);
+        });
     }
 }

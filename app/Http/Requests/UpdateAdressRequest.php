@@ -13,7 +13,7 @@ class UpdateAdressRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class UpdateAdressRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'country' => 'required|string',
+            'city' => 'required|string',
+            'postal_code' => 'required',
+            'adress' => 'required'
         ];
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\AdressCache;
+use App\Cache\AdressCacheRepository;
 use App\Models\Adress;
 use App\Http\Requests\StoreAdressRequest;
 use App\Http\Requests\UpdateAdressRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class AdressController extends Controller
 {
@@ -22,7 +24,7 @@ class AdressController extends Controller
         }
     }
 
-    public function __construct(AdressCache $repository, Request $request)
+    public function __construct(AdressCacheRepository $repository, Request $request)
     {
         $this->repository = $repository;
         $this->setAdress($request);
@@ -35,7 +37,9 @@ class AdressController extends Controller
      */
     public function index()
     {
-        //
+        $adresses = $this->repository->paginatedUserAdresses(10, Auth::user());
+
+        return Inertia::render('Adress/Index', compact('adresses'));
     }
 
     /**
@@ -45,7 +49,7 @@ class AdressController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Adress/Create');
     }
 
     /**
@@ -56,7 +60,11 @@ class AdressController extends Controller
      */
     public function store(StoreAdressRequest $request)
     {
-        //
+        $request->merge(['user_id' => Auth::id()]);
+
+        $this->repository->create($request->only(['adress', 'city', 'country', 'user_id', 'postal_code']));
+
+        return redirect()->back();
     }
 
     /**
@@ -76,9 +84,13 @@ class AdressController extends Controller
      * @param  \App\Models\Adress  $adress
      * @return \Illuminate\Http\Response
      */
-    public function edit(Adress $adress)
+    public function edit()
     {
-        //
+        $this->authorize('owner', $this->adress);
+
+        $adress = $this->adress;
+
+        return Inertia::render('Adress/Edit', compact('adress'));
     }
 
     /**
@@ -88,9 +100,13 @@ class AdressController extends Controller
      * @param  \App\Models\Adress  $adress
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAdressRequest $request, Adress $adress)
+    public function update(UpdateAdressRequest $request)
     {
-        //
+        $this->authorize('owner', $this->adress);
+
+        $this->repository->update($request->only(['postal_code', 'country', 'city', 'adress']), $this->adress->id);
+
+        return redirect()->back();
     }
 
     /**
@@ -99,8 +115,12 @@ class AdressController extends Controller
      * @param  \App\Models\Adress  $adress
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Adress $adress)
+    public function destroy()
     {
-        //
+        $this->authorize('owner', $this->adress);
+
+        $this->adress->delete();
+
+        return redirect()->back();
     }
 }

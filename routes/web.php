@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdressController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -47,3 +48,7 @@ Route::get('/history', [SearchController::class, 'historySearch'])->name('search
 Route::get('/most-searched', [SearchController::class, 'mostSearched'])->name('searches.most-searched');
 
 Route::get('/autosuggest', [SearchController::class, 'autosuggest'])->name('searches.autosuggest');
+
+Route::resource('adresses', AdressController::class)->middleware('auth:sanctum')->parameters([
+    'adresses' => 'adress_id'
+]);
