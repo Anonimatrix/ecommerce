@@ -62,6 +62,8 @@
         </jet-button>
       </div>
     </form>
+    <div><a :href="route('oauth.redirect', 'google')">Google</a></div>
+    <div><a :href="route('oauth.redirect', 'facebook')">Facebook</a></div>
   </jet-authentication-card>
 </template>
 

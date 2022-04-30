@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\EnsureUserDoesntHavePassword;
+use App\Http\Middleware\EnsureUserHasPassword;
+use App\Http\Middleware\UserHasPassword;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,5 +67,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.password' => EnsureUserHasPassword::class,
+        'auth.not-password' => EnsureUserDoesntHavePassword::class
     ];
 }
