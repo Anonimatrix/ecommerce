@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class OAuthControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
     public function mockSocialiteUser()
     {
@@ -24,15 +25,15 @@ class OAuthControllerTest extends TestCase
 
         $abstractUser
             ->shouldReceive('getId')
-            ->andReturn(rand())
+            ->andReturn($this->faker->numerify('##########'))
             ->shouldReceive('getNickname')
-            ->andReturn(Str::random(10))
+            ->andReturn($this->faker->name)
             ->shouldReceive('getName')
-            ->andReturn(Str::random(10))
+            ->andReturn($this->faker->name)
             ->shouldReceive('getEmail')
-            ->andReturn(Str::random(10) . '@gmail.com')
+            ->andReturn($this->faker->email)
             ->shouldReceive('getAvatar')
-            ->andReturn('https://en.gravatar.com/userimage');
+            ->andReturn($this->faker->imageUrl);
 
         Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
     }
