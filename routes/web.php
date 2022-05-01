@@ -46,7 +46,7 @@ Route::middleware(['auth.password'])->group(function () {
 
     Route::get('products-search', [ProductController::class, 'search'])->name('products.search');
 
-    Route::get('subcategories/{subcategorie_id}', [SubcategorieController::class, 'show']);
+    Route::get('subcategories/{subcategorie_id}', [SubcategorieController::class, 'show'])->name('subcategories.show');
 
     Route::resource('categories', CategorieController::class);
 

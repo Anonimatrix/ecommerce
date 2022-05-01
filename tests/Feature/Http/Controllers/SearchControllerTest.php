@@ -38,7 +38,7 @@ class SearchControllerTest extends TestCase
                 fn (AssertableJson $json) =>
                 $json->has(
                     'searches',
-                    SearchController::LIMIT_SEARCHES
+                    SearchController::LIMIT_SUGGESTS
                 )
             );
     }

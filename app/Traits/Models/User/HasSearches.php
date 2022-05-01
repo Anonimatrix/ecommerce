@@ -2,6 +2,7 @@
 
 namespace App\Traits\Models\User;
 
+use App\Cache\SearchCacheRepository;
 use App\Models\Search;
 
 trait HasSearches
@@ -11,8 +12,8 @@ trait HasSearches
         return $this->hasMany(Search::class);
     }
 
-    public function searchInSearches($search, $limit)
+    public function searchInSearches(SearchCacheRepository $searchRepository, $search, $limit)
     {
-        return $this->searches()->where('content', 'LIKE', "%$search%")->limit($limit)->get();
+        return $searchRepository->searchInUserSearchesWithLimit($search, $limit, $this);
     }
 }

@@ -17,6 +17,8 @@ use App\Repositories\TagRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\EloquentRepositories\SubcategorieRepository;
 use App\Repositories\SubcategorieRepositoryInterface;
+use App\Repositories\EloquentRepositories\SearchRepository;
+use App\Repositories\SearchRepositoryInterface;
 
 class RepositorieServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,7 @@ class RepositorieServiceProvider extends ServiceProvider
         PermissionRepositoryInterface::class => PermissionRepository::class,
         RoleRepositoryInterface::class => RoleRepository::class,
         SubcategorieRepositoryInterface::class => SubcategorieRepository::class,
-        AdressRepositoryInterface::class => AdressRepository::class
+        AdressRepositoryInterface::class => AdressRepository::class,
+        SearchRepositoryInterface::class => SearchRepository::class,
     ];
 }

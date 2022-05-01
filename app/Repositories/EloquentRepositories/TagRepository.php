@@ -21,7 +21,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
 
         foreach ($titles as $title) {
             $tag = $this->model->firstOrCreate(['title' => $title, 'user_id' => Auth::id()]);
-            array_push($ids, $tag);
+            array_push($ids, $tag->id);
         }
 
         return $ids;

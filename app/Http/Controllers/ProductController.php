@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cache\ProductCache;
+use App\Cache\SearchCacheRepository;
 use App\Cache\TagCache;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
@@ -162,11 +163,11 @@ class ProductController extends Controller
         return redirect()->back();
     }
 
-    public function search(SearchRequest $request)
+    public function search(SearchRequest $request, SearchCacheRepository $searchRepository)
     {
         $search = strtolower(Slugify::slugifyReverse($request->input('q')));
 
-        if (Auth::user()) Search::updateOrCreate(['content' => $search, 'user_id' => Auth::id()]);
+        if (Auth::user()) $searchRepository->updateOrCreate(['content' => $search, 'user_id' => Auth::id()]);
 
         $products = $this->repository->search($search);
 
