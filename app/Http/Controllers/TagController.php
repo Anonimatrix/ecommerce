@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cache\TagCache;
+use App\Http\Requests\SearchTagRequest;
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+    const LIMIT_SUGGESTS = 5;
 
     protected $repository;
     protected $tag;
@@ -34,9 +36,11 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function suggest(SearchTagRequest $request)
     {
-        //
+        $suggests = $this->repository->suggest($request->input('search'), self::LIMIT_SUGGESTS);
+
+        return response()->json(compact('suggests'));
     }
 
     /**

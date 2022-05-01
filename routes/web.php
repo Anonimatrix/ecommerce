@@ -10,6 +10,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SubcategorieController;
+use App\Http\Controllers\TagController;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -62,6 +63,8 @@ Route::middleware(['auth.password'])->group(function () {
     Route::get('/auth/{driver}/redirect',  [OAuthLoginController::class, 'redirectToProvider'])->name('oauth.redirect');
 
     Route::get('/auth/{driver}/callback', [OAuthLoginController::class, 'handleProviderCallback'])->name('oauth.callback');
+
+    Route::get('/tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
 });
 
 Route::middleware(['auth.not-password'])->group(function () {

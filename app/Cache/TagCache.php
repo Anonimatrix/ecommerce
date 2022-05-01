@@ -20,8 +20,17 @@ class TagCache extends BaseCache implements TagRepositoryInterface
     public function createMany(array $titles)
     {
         $keyNames = implode('-', $titles);
-        $this->cache->tags([$this->key . 's'])->remember($this->key .  's-' . $keyNames, self::TTL, function () use ($titles) {
+
+        return $this->cache->tags([$this->key . 's-many'])->remember($this->key .  's-' . $keyNames, self::TTL, function () use ($titles) {
+            $this->cache->tags([$this->key . 's'])->flush();
             return $this->repository->createMany($titles);
+        });
+    }
+
+    public function suggest(string $search, int $limit)
+    {
+        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-$search", self::TTL, function () use ($search, $limit) {
+            return $this->repository->suggest($search, $limit);
         });
     }
 }
