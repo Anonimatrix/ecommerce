@@ -104,7 +104,7 @@ class AdressController extends Controller
     {
         $this->authorize('owner', $this->adress);
 
-        $this->repository->update($request->only(['postal_code', 'country', 'city', 'adress']), $this->adress->id);
+        $this->repository->update($request->only(['postal_code', 'country', 'city', 'adress']), $this->adress);
 
         return redirect()->back();
     }
