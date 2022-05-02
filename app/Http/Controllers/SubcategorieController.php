@@ -46,7 +46,7 @@ class SubcategorieController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Subcategories/Create');
     }
 
     /**
@@ -57,7 +57,9 @@ class SubcategorieController extends Controller
      */
     public function store(StoreSubcategorieRequest $request)
     {
-        //
+        $subcategorie = $this->repository->create($request->only(['title', 'categorie_id']));
+
+        return redirect()->route('subcategories.show', $subcategorie->id);
     }
 
     /**
@@ -68,9 +70,9 @@ class SubcategorieController extends Controller
      */
     public function show()
     {
-        $products = $this->subcategorie->products()->paginate(10);
+        $products = $this->repository->paginatedProductsOfSubcategorie(10, $this->subcategorie);
 
-        return Inertia::render('Subcategorie/Show', ['products' => $products, 'subcategorie' => $this->subcategorie]);
+        return Inertia::render('Subcategories/Show', ['products' => $products, 'subcategorie' => $this->subcategorie]);
     }
 
     /**
@@ -79,9 +81,11 @@ class SubcategorieController extends Controller
      * @param  \App\Models\Subcategorie  $subcategorie
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subcategorie $subcategorie)
+    public function edit()
     {
-        //
+        $subcategorie = $this->subcategorie;
+
+        return Inertia::render('Subcategories/Edit', compact('subcategorie'));
     }
 
     /**
@@ -91,9 +95,11 @@ class SubcategorieController extends Controller
      * @param  \App\Models\Subcategorie  $subcategorie
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSubcategorieRequest $request, Subcategorie $subcategorie)
+    public function update(UpdateSubcategorieRequest $request)
     {
-        //
+        $this->repository->update($request->only(['title', 'categorie_id']), $this->subcategorie);
+
+        return redirect()->route('subcategories.show', $this->subcategorie->id);
     }
 
     /**
@@ -102,8 +108,10 @@ class SubcategorieController extends Controller
      * @param  \App\Models\Subcategorie  $subcategorie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subcategorie $subcategorie)
+    public function destroy()
     {
-        //
+        $this->repository->delete($this->subcategorie);
+
+        return redirect()->back();
     }
 }

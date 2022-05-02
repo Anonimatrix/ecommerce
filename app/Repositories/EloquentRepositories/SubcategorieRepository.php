@@ -17,4 +17,9 @@ class SubcategorieRepository extends BaseRepository implements SubcategorieRepos
     {
         parent::__construct($subcategorie);
     }
+
+    public function paginatedProductsOfSubcategorie(int $paginate, Subcategorie $subcategorie)
+    {
+        return $subcategorie->products()->paginate($paginate);
+    }
 }
