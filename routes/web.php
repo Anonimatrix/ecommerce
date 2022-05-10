@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ShippController;
 use App\Http\Controllers\SubcategorieController;
 use App\Http\Controllers\TagController;
 use Inertia\Inertia;
@@ -67,6 +68,9 @@ Route::middleware(['auth.password'])->group(function () {
     Route::get('/auth/{driver}/callback', [OAuthLoginController::class, 'handleProviderCallback'])->name('oauth.callback');
 
     Route::get('/tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
+
+    Route::get('products/{product_id}/shipp-quote', [ShippController::class, 'quote'])->name('shipp.quote');
+    Route::get('products/{adress_id}/shipp-list-sucursales', [ShippController::class, 'listSucursales'])->name('shipp.list-sucursales');
 });
 
 Route::middleware(['auth.not-password'])->group(function () {

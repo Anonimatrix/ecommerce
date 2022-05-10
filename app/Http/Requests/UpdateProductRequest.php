@@ -27,6 +27,9 @@ class UpdateProductRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'shipp_active' => 'boolean',
+            'sucursal_code' => 'required_if:shipp_active,==,1',
             'subcategorie_id' => 'required|exists:subcategories,id',
             'photos' => 'array',
             'photos.*' => 'file|mimes:jpeg,jpg,gif,png'

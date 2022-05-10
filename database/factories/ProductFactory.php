@@ -19,6 +19,8 @@ class ProductFactory extends Factory
             'title' => $this->faker->sentence(4),
             'user_id' => User::factory()->create(),
             'subcategorie_id' => Subcategorie::factory()->create(),
+            'shipp_active' => '1',
+            'sucursal_code' => 'MDQ',
             'description' => $this->faker->text(800),
             'stock' => $this->faker->numberBetween(0, 20),
             'price' => $this->faker->numberBetween(0, 20000),

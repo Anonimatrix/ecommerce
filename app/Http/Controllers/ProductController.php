@@ -70,7 +70,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = $this->repository->create($request->only(['title', 'description', 'price', 'subcategorie_id', 'stock', 'paused_at']) + ['user_id' => Auth::id()]);
+        $product = $this->repository->create($request->validated() + ['user_id' => Auth::id()]);
 
         $this->uploadPhotos($product, $request->photos);
 

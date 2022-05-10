@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Cache\AdressCacheRepository;
+use App\Cache\ProductCache;
+use App\Http\Requests\ShippQuoteRequest;
 use App\Models\Shipp;
 use App\Http\Requests\StoreShippRequest;
 use App\Http\Requests\UpdateShippRequest;
+use App\Shipping\Contracts\ShippGatewayInterface;
+use Illuminate\Http\Request;
 
 class ShippController extends Controller
 {
@@ -13,9 +18,51 @@ class ShippController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    protected $repository;
+    protected $product;
+    protected $adress;
+    protected $adressRepository;
+
+    public function setProduct(Request $request)
     {
-        //
+        $product_id = $request->route('product_id');
+
+        if ($product_id) {
+            $this->product = $this->repository->getById($product_id);
+        }
+    }
+
+    public function setAdress(Request $request)
+    {
+        $adress_id = $request->route('adress_id');
+
+        if ($adress_id) {
+            $this->adress = $this->adressRepository->getById($adress_id);
+        }
+    }
+
+    public function __construct(ProductCache $productCache, AdressCacheRepository $adressCache, Request $request)
+    {
+        $this->repository = $productCache;
+        $this->adressRepository = $adressCache;
+        $this->setProduct($request);
+        $this->setAdress($request);
+    }
+
+    public function quote(ShippQuoteRequest $request, ShippGatewayInterface $shippGateway)
+    {
+        $prices = $shippGateway->quote($request->input('postal_code'), $this->product, $request->input('shipp_type'));
+
+        return response()->json(['shipp_price' => $prices['tarifaConIva']['total']]);
+    }
+
+    public function listSucursales(ShippGatewayInterface $shippGateway)
+    {
+        $adress = $this->adress;
+        $sucursales = $shippGateway->listSucursales($adress);
+
+        return response()->json(['sucursales' => $sucursales]);
     }
 
     /**
