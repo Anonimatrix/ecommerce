@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
 use App\Statuses\OrderStatus;
+use App\Statuses\PaymentStatus;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -151,11 +152,19 @@ class UserControllerTest extends TestCase
         //Creating real order payed
         $order = Order::factory()->create(['status' => OrderStatus::CANCELED, 'buyer_id' => $buyer->id]);
 
-        $payment = Payment::factory()->create(['order_id' => $order->id, 'status' => 'refunded']);
+        $payment = Payment::factory()->create(['order_id' => $order->id, 'status' => PaymentStatus::REFUNDED, 'amount' => ($order->product->price * $order->quantity)]);
 
         $this->actingAs($buyer)->get(route('user.money'))
             ->assertSuccessful()
             ->assertJson(['money' => $payment->amount]);
+    }
+
+    public function test_seller_not_have_money_refunded()
+    {
+        //Creating real order payed
+        $order = Order::factory()->create(['status' => OrderStatus::CANCELED]);
+
+        $payment = Payment::factory()->create(['order_id' => $order->id, 'status' => PaymentStatus::REFUNDED, 'amount' => ($order->product->price * $order->quantity)]);
 
         $this->actingAs($order->product->user)->get(route('user.money'))
             ->assertSuccessful()

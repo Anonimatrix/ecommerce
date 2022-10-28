@@ -28,7 +28,7 @@ use App\Repositories\Interfaces\PaymentRepositoryInterface;
 
 use App\Services\Billing\Contracts\PaymentGatewayInterface;
 use App\Services\Billing\MercadoPagoGateway;
-use App\Repositories\Cache\AdressCacheRepository;
+use App\Repositories\Cache\AddressCacheRepository;
 use App\Repositories\Cache\ChatCacheRepository;
 use App\Repositories\Cache\OrderCacheRepository;
 use App\Repositories\Cache\PaymentCacheRepository;
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
         ShippGatewayInterface::class => AndreaniGateway::class,
         'productRepository' => ProductCache::class,
         'paymentRepository' => PaymentCacheRepository::class,
-        'adressRepository' => AdressCacheRepository::class,
+        'addressRepository' => AddressCacheRepository::class,
         'shippRepository' => ShippCacheRepository::class,
         'chatRepository' => ChatCacheRepository::class,
         'shippGateway' => AndreaniGateway::class,

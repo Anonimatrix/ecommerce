@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Repositories\Interfaces\AdressRepositoryInterface;
+use App\Repositories\Interfaces\AddressRepositoryInterface;
 use App\Repositories\Interfaces\CategorieRepositoryInterface;
 use App\Repositories\EloquentRepositories\CategorieRepository;
 use App\Repositories\EloquentRepositories\PermissionRepository;
 use App\Repositories\EloquentRepositories\ProductRepository;
 use App\Repositories\EloquentRepositories\RoleRepository;
 use App\Repositories\EloquentRepositories\TagRepository;
-use App\Repositories\EloquentRepositories\AdressRepository;
+use App\Repositories\EloquentRepositories\AddressRepository;
 use App\Repositories\EloquentRepositories\OrderRepository;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
@@ -31,7 +31,7 @@ class RepositorieServiceProvider extends ServiceProvider
         PermissionRepositoryInterface::class => PermissionRepository::class,
         RoleRepositoryInterface::class => RoleRepository::class,
         SubcategorieRepositoryInterface::class => SubcategorieRepository::class,
-        AdressRepositoryInterface::class => AdressRepository::class,
+        AddressRepositoryInterface::class => AddressRepository::class,
         SearchRepositoryInterface::class => SearchRepository::class,
         OrderRepositoryInterface::class => OrderRepository::class
     ];

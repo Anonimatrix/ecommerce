@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoadRelationshipsUser
 {
-    protected $relations = ['adresses'];
+    protected $relations = ['addresses'];
     /**
      * Handle an incoming request.
      *

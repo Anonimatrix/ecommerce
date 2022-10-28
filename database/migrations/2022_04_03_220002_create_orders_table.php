@@ -17,12 +17,12 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('buyer_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('adress_id');
+            $table->unsignedBigInteger('address_id');
             $table->string('status');
             $table->unsignedInteger('quantity');
             $table->unsignedInteger('unit_price');
             $table->foreign('buyer_id')->references('id')->on('users');
-            $table->foreign('adress_id')->references('id')->on('adresses');
+            $table->foreign('address_id')->references('id')->on('addresses');
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });

@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Product;
-use App\Policies\AdressPolicy;
+use App\Policies\AddressPolicy;
 use App\Policies\ProductPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Product::class => ProductPolicy::class,
-        Adress::class => AdressPolicy::class
+        Address::class => AddressPolicy::class
     ];
 
     /**

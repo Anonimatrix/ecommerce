@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Models;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Chat;
 use App\Models\Complaint;
 use App\Models\Order;
@@ -45,11 +45,11 @@ class OrderTest extends TestCase
         $this->assertInstanceOf(User::class, $order->buyer);
     }
 
-    public function test_belongs_to_adress()
+    public function test_belongs_to_address()
     {
         $order = Order::factory()->create();
 
-        $this->assertInstanceOf(Adress::class, $order->adress);
+        $this->assertInstanceOf(Address::class, $order->address);
     }
 
     public function test_has_one_chat()

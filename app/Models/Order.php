@@ -12,7 +12,7 @@ class Order extends Model
     protected $fillable = [
         'buyer_id',
         'product_id',
-        'adress_id',
+        'address_id',
         'quantity',
         'status',
         'unit_price'
@@ -28,9 +28,9 @@ class Order extends Model
         return $this->belongsTo(User::class, 'buyer_id');
     }
 
-    public function adress()
+    public function address()
     {
-        return $this->belongsTo(Adress::class);
+        return $this->belongsTo(Address::class);
     }
 
     public function chat()

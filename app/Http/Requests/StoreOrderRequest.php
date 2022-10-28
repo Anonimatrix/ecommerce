@@ -27,7 +27,7 @@ class StoreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'adress_id' => 'required|integer|exists:adresses,id',
+            'address_id' => 'required|integer|exists:addresses,id',
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|gt:0|less_or_equal_than_field:product_id,stock,' . ProductRepository::class,
             'shipp_type' => 'required|string|in:' . implode(',', array_keys(Config::get('shipping.types')))

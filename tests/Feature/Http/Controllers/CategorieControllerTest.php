@@ -53,7 +53,14 @@ class CategorieControllerTest extends TestCase
 
     public function test_create()
     {
-        $this->get(route('categories.create'))
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
+        $this->actingAs($user)->get(route('categories.create'))
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->component('Categories/Create')
@@ -62,11 +69,18 @@ class CategorieControllerTest extends TestCase
 
     public function test_store()
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
         $categorie = [
             'title' => $this->faker->sentence
         ];
 
-        $this->post(route('categories.store'), $categorie)
+        $this->actingAs($user)->post(route('categories.store'), $categorie)
             ->assertRedirect();
 
         $this->assertDatabaseHas('categories', $categorie);
@@ -74,9 +88,16 @@ class CategorieControllerTest extends TestCase
 
     public function test_edit()
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
         $categorie = Categorie::factory()->create();
 
-        $this->get(route('categories.edit', $categorie))
+        $this->actingAs($user)->get(route('categories.edit', $categorie))
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->component('Categories/Edit')
@@ -86,13 +107,20 @@ class CategorieControllerTest extends TestCase
 
     public function test_update()
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
         $categorie = Categorie::factory()->create();
 
         $data = [
             'title' => $this->faker->sentence
         ];
 
-        $this->put(route('categories.update', $categorie->id), $data)
+        $this->actingAs($user)->put(route('categories.update', $categorie->id), $data)
             ->assertRedirect();
 
         $this->assertDatabaseHas('categories', $data);
@@ -100,11 +128,18 @@ class CategorieControllerTest extends TestCase
 
     public function test_destroy()
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
         $categorie = Categorie::factory()->create();
 
         $this->assertNotSoftDeleted('categories', $categorie->only('id', 'title'));
 
-        $this->delete(route('categories.destroy', $categorie->id))
+        $this->actingAs($user)->delete(route('categories.destroy', $categorie->id))
             ->assertSuccessful();
 
         $this->assertSoftDeleted('categories', $categorie->only('id', 'title'));
@@ -112,11 +147,18 @@ class CategorieControllerTest extends TestCase
 
     public function test_destroy_validation()
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $user->assignRole('admin');
+
         $subcategorie = Subcategorie::factory()->create();
 
         $this->assertNotSoftDeleted('categories', $subcategorie->categorie->only('id', 'title'));
 
-        $this->delete(route('categories.destroy', $subcategorie->categorie->id))
+        $this->actingAs($user)->delete(route('categories.destroy', $subcategorie->categorie->id))
             ->assertStatus(500);
 
         $this->assertNotSoftDeleted('categories', $subcategorie->categorie->only('id', 'title'));

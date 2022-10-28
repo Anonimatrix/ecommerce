@@ -4,7 +4,7 @@ namespace App\Services\Shipping;
 
 use App\Events\ShipmentCreated;
 use App\Exceptions\Shipping\UnavailableServiceException;
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\Shipping\Contracts\ShippGatewayInterface;
@@ -51,12 +51,12 @@ class AndreaniGateway implements ShippGatewayInterface
         return ['price' => $shippPrice, 'status_code' => $requestIsFailed ? $res['status'] : 200];
     }
 
-    public function listSucursales(Adress $sellerAdress)
+    public function listSucursales(Address $sellerAddress)
     {
         $listSucursalesUrl = $this->urlResolver('list_sucursales');
 
         $params = [
-            'codigoPostal' => $sellerAdress->postal_code
+            'codigoPostal' => $sellerAddress->postal_code
         ];
 
         return Http::get($listSucursalesUrl, $params)->json();
@@ -69,7 +69,7 @@ class AndreaniGateway implements ShippGatewayInterface
         $product = $order->product;
         $seller = $product->user;
         $buyer = $order->buyer;
-        $buyer_adress = $order->adress;
+        $buyer_address = $order->address;
 
         $params = [
             'contrato' => (string) Config::get($this->baseConfigAndreaniApiPath . '.contracts.' . $shipmentType),
@@ -78,9 +78,9 @@ class AndreaniGateway implements ShippGatewayInterface
             ],
             'destino' => [
                 'postal' => [
-                    'localidad' => $buyer_adress->city,
-                    'codigoPostal' => $buyer_adress->postal_code,
-                    'calle' => $buyer_adress->adress,
+                    'localidad' => $buyer_address->city,
+                    'codigoPostal' => $buyer_address->postal_code,
+                    'calle' => $buyer_address->address,
                     'numero' => '2255',
                 ]
             ],

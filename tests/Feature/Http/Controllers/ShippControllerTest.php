@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Product;
 use App\Services\Shipping\ShippTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,9 +43,9 @@ class ShippControllerTest extends TestCase
 
     public function test_list_sucursales()
     {
-        $adress = Adress::factory()->create();
+        $address = Address::factory()->create();
 
-        $this->get(route('shipp.list-sucursales', ['adress_id' => $adress->id]))
+        $this->get(route('shipp.list-sucursales', ['address_id' => $address->id]))
             ->assertJsonStructure([
                 'sucursales' => [
                     '*' => [

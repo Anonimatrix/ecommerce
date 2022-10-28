@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AdressController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\Auth\OAuthLoginController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ChatController;

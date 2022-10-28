@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\View;
 use App\Statuses\OrderStatus;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
@@ -122,13 +123,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function getSimilarsOfLatestViewedProduct()
     {
-        $quantity = 10;
-        $view = $this->viewRepository->latestOfAuthenticated($quantity, $this->userRepository);
+        $view = $this->viewRepository->latestOfAuthenticated(1, $this->userRepository);
 
         if (empty($view)) return [];
 
         $viewProduct = $view->product;
-
+        $quantity = 10;
         $products = $this->getSimilarProducts($viewProduct->id, $quantity - 1, ['count_tags', 'DESC'], []);
 
         $products->push($viewProduct);

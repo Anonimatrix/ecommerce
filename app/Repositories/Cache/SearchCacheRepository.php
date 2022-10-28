@@ -44,7 +44,8 @@ class SearchCacheRepository extends BaseCache implements SearchRepositoryInterfa
 
     public function latestOfAuthenticated(UserCacheRepository $userRepository)
     {
-        $user = $userRepository->authenticated()->id;
+        $user = $userRepository->authenticated();
+
         return $this->cache->tags([$this->key])->remember($this->getRememberString(false, null, "latest-search-by-user-$user->id"), self::TTL, function () use ($userRepository) {
             return $this->repository->latestOfAuthenticated($userRepository);
         });

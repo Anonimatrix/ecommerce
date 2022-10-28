@@ -20,7 +20,8 @@ class ViewCacheRepository extends BaseCache implements ViewRepositoryInterface
 
     public function latestOfAuthenticated(int $quantity = 1, UserCacheRepository $userRepository)
     {
-        $user = $userRepository->authenticated()->id;
+        $user = $userRepository->authenticated();
+
         return $this->cache->tags([$this->key])->remember($this->getRememberString(false, null, "latest-view-by-user-$user->id-$quantity"), self::TTL, function () use ($quantity, $userRepository) {
             return $this->repository->latestOfAuthenticated($quantity, $userRepository);
         });

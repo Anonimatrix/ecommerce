@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Product;
 use App\Models\User;
 use App\Statuses\OrderStatus;
@@ -22,7 +22,7 @@ class OrderFactory extends Factory
         return [
             'buyer_id' => User::factory()->create(),
             'product_id' => $product->id,
-            'adress_id' => Adress::factory()->create(),
+            'address_id' => Address::factory()->create(),
             'status' => OrderStatus::PENDING,
             'quantity' => $this->faker->numberBetween(1, 20),
             'unit_price' => $product->price

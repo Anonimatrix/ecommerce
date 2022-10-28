@@ -22,7 +22,10 @@ class ViewRepository extends BaseRepository implements ViewRepositoryInterface
          */
         $user = $userRepository->authenticated();
 
-        if (!$user) return [];
+        if (!$user) {
+            if ($quantity > 1) return [];
+            return null;
+        };
 
         $query = $user->views()->latest('id');
 

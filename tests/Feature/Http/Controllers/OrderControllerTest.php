@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Exceptions\Payment\UnavailableServiceException;
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Shipp;
@@ -42,12 +42,12 @@ class OrderControllerTest extends TestCase
          */
         $user = User::factory()->create();
 
-        $adress = Adress::factory()->create();
+        $address = Address::factory()->create();
 
         $product = Product::factory()->create();
 
         $data = [
-            'adress_id' => $adress->id,
+            'address_id' => $address->id,
             'product_id' => $product->id,
             'quantity' => $product->stock,
             'shipp_type' => ShippTypes::ACCORD_WITH_SELLER
@@ -57,7 +57,7 @@ class OrderControllerTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirectContains('mercadopago');
 
-        $this->assertDatabaseHas('orders', ['adress_id' => $data['adress_id'], 'product_id' => $data['product_id']]);
+        $this->assertDatabaseHas('orders', ['address_id' => $data['address_id'], 'product_id' => $data['product_id']]);
     }
 
     public function test_store_with_pay_shipment()
@@ -67,12 +67,12 @@ class OrderControllerTest extends TestCase
          */
         $user = User::factory()->create();
 
-        $adress = Adress::factory()->create();
+        $address = Address::factory()->create();
 
         $product = Product::factory()->create();
 
         $data = [
-            'adress_id' => $adress->id,
+            'address_id' => $address->id,
             'product_id' => $product->id,
             'quantity' => $product->stock,
             'shipp_type' => ShippTypes::TO_ADRESS
@@ -82,7 +82,7 @@ class OrderControllerTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirectContains('mercadopago');
 
-        $this->assertDatabaseHas('orders', ['adress_id' => $data['adress_id'], 'product_id' => $data['product_id']]);
+        $this->assertDatabaseHas('orders', ['address_id' => $data['address_id'], 'product_id' => $data['product_id']]);
         $this->assertDatabaseHas('shipps', ['order_id' => 1]);
     }
 
@@ -94,14 +94,14 @@ class OrderControllerTest extends TestCase
         $user = User::factory()->create();
 
         $data = [
-            // 'adress_id' => 1,
+            // 'address_id' => 1,
             // 'product_id' => 1',
             // 'quantity' => 0
         ];
 
         $this->actingAs($user)->post(route('orders.store'), $data)
             ->assertStatus(302)
-            ->assertSessionHasErrors(['adress_id', 'product_id', 'quantity']);
+            ->assertSessionHasErrors(['address_id', 'product_id', 'quantity']);
 
         $this->assertDatabaseMissing('orders', $data);
     }
@@ -113,12 +113,12 @@ class OrderControllerTest extends TestCase
          */
         $user = User::factory()->create();
 
-        $adress = Adress::factory()->create();
+        $address = Address::factory()->create();
 
         $product = Product::factory(['stock' => 2])->create();
 
         $data = [
-            'adress_id' => $adress->id,
+            'address_id' => $address->id,
             'product_id' => $product->id,
             'quantity' => 3
         ];
@@ -345,12 +345,12 @@ class OrderControllerTest extends TestCase
          */
         $user = User::factory()->create();
 
-        $adress = Adress::factory()->create();
+        $address = Address::factory()->create();
 
         $product = Product::factory()->create();
 
         $data = [
-            'adress_id' => $adress->id,
+            'address_id' => $address->id,
             'product_id' => $product->id,
             'quantity' => $product->stock,
             'shipp_type' => ShippTypes::TO_ADRESS

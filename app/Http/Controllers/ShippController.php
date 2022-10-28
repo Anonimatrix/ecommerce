@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Cache\AdressCacheRepository;
+use App\Repositories\Cache\AddressCacheRepository;
 use App\Repositories\Cache\ProductCache;
 use App\Http\Requests\ShippQuoteRequest;
 use App\Models\Shipp;
@@ -21,8 +21,8 @@ class ShippController extends Controller
 
     protected $repository;
     protected $product;
-    protected $adress;
-    protected $adressRepository;
+    protected $address;
+    protected $addressRepository;
 
     public function setProduct(Request $request)
     {
@@ -33,21 +33,21 @@ class ShippController extends Controller
         }
     }
 
-    public function setAdress(Request $request)
+    public function setAddress(Request $request)
     {
-        $adress_id = $request->route('adress_id');
+        $address_id = $request->route('address_id');
 
-        if ($adress_id) {
-            $this->adress = $this->adressRepository->getById($adress_id);
+        if ($address_id) {
+            $this->address = $this->addressRepository->getById($address_id);
         }
     }
 
-    public function __construct(ProductCache $productCache, AdressCacheRepository $adressCache, Request $request)
+    public function __construct(ProductCache $productCache, AddressCacheRepository $addressCache, Request $request)
     {
         $this->repository = $productCache;
-        $this->adressRepository = $adressCache;
+        $this->addressRepository = $addressCache;
         $this->setProduct($request);
-        $this->setAdress($request);
+        $this->setAddress($request);
     }
 
     public function quote(ShippQuoteRequest $request, ShippGatewayInterface $shippGateway)
@@ -63,8 +63,8 @@ class ShippController extends Controller
 
     public function listSucursales(ShippGatewayInterface $shippGateway)
     {
-        $adress = $this->adress;
-        $sucursales = $shippGateway->listSucursales($adress);
+        $address = $this->address;
+        $sucursales = $shippGateway->listSucursales($address);
 
         return response()->json(['sucursales' => $sucursales]);
     }

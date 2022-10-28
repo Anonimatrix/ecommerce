@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Product;
 use App\Models\Subcategorie;
 use App\Models\Tag;

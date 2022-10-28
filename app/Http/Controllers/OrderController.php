@@ -6,7 +6,7 @@ use App\Services\Billing\Contracts\PaymentGatewayInterface;
 use App\Repositories\Cache\OrderCacheRepository;
 use App\Repositories\Cache\PaymentCacheRepository;
 use App\Repositories\Cache\ShippCacheRepository;
-use App\Facades\AdressRepository;
+use App\Facades\AddressRepository;
 use App\Facades\ProductRepository;
 use App\Facades\ShippRepository;
 use App\Http\Requests\PaidWebhookRequest;
@@ -87,7 +87,7 @@ class OrderController extends Controller
     {
         extract(
             $request->only(
-                ['product_id', 'adress_id', 'quantity', 'shipp_type']
+                ['product_id', 'address_id', 'quantity', 'shipp_type']
             )
         );
 
@@ -95,15 +95,15 @@ class OrderController extends Controller
 
         $order = $this->repository->create([
             'buyer_id' => Auth::id(),
-            'adress_id' => $adress_id,
+            'address_id' => $address_id,
             'product_id' => $product_id,
             'status' => OrderStatus::PENDING,
             'quantity' => $quantity,
             'unit_price' => $product->price
         ]);
 
-        $adress = AdressRepository::getById($adress_id);
-        $shipp_res = ShippingUtils::isNeededPay($shipp_type) ? $shippGateway->quote($adress->postal_code, $product, $shipp_type) : null;
+        $address = AddressRepository::getById($address_id);
+        $shipp_res = ShippingUtils::isNeededPay($shipp_type) ? $shippGateway->quote($address->postal_code, $product, $shipp_type) : null;
 
         $shipp_price = $shipp_res === null || $shipp_res['status_code'] != 200 ? null : $shipp_res['price'];
 

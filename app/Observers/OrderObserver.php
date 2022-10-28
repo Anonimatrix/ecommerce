@@ -2,12 +2,12 @@
 
 namespace App\Observers;
 
-use App\Facades\AdressRepository;
+use App\Facades\AddressRepository;
 use App\Facades\ChatRepository;
 use App\Facades\ShippGateway;
 use App\Facades\ShippRepository;
 use App\Models\Order;
-use App\Repositories\Cache\AdressCacheRepository;
+use App\Repositories\Cache\AddressCacheRepository;
 use App\Repositories\Cache\ShippCacheRepository;
 use App\Statuses\OrderStatus;
 use App\Services\Shipping\Contracts\ShippGatewayInterface;

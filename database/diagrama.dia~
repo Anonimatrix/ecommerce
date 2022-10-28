@@ -1974,7 +1974,7 @@
         <dia:real val="6.8000000000000007"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#Adress#</dia:string>
+        <dia:string>#Address#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -2155,7 +2155,7 @@
         </dia:composite>
         <dia:composite type="umlattribute">
           <dia:attribute name="name">
-            <dia:string>#adress#</dia:string>
+            <dia:string>#address#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>##</dia:string>

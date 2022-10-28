@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Shipping;
 
-use App\Models\Adress;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -24,11 +24,11 @@ class AndreaniGatewayTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user
          */
         $user = User::factory()->create();
-        $adress = Adress::factory(['user_id' => $user->id])->create();
+        $address = Address::factory(['user_id' => $user->id])->create();
 
         $shippingGateway = app()->make(ShippGatewayInterface::class);
 
-        $sucursales = $shippingGateway->listSucursales($adress);
+        $sucursales = $shippingGateway->listSucursales($address);
 
         $this->assertNotEmpty($sucursales);
         $this->assertArrayHasKey('codigo', $sucursales[0]);
@@ -41,7 +41,7 @@ class AndreaniGatewayTest extends TestCase
          * @var \Illuminate\Contracts\Auth\Authenticatable $user
          */
         $user = User::factory()->create();
-        $adress = Adress::factory(['user_id' => $user->id])->create();
+        $address = Address::factory(['user_id' => $user->id])->create();
         $product = Product::factory(['user_id' => $user->id])->create();
 
         $shippingGateway = app()->make(ShippGatewayInterface::class);

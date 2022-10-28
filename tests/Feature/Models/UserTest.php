@@ -20,11 +20,11 @@ class UserTest extends TestCase
         $this->assertInstanceOf(Collection::class, $user->products);
     }
 
-    public function test_has_many_adresses()
+    public function test_has_many_addresses()
     {
         $user = new User();
 
-        $this->assertInstanceOf(Collection::class, $user->adresses);
+        $this->assertInstanceOf(Collection::class, $user->addresses);
     }
 
     public function test_has_many_searches()
