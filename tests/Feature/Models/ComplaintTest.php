@@ -6,6 +6,8 @@ use App\Models\Chat;
 use App\Models\Complaint;
 use App\Models\Order;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -18,6 +20,13 @@ class ComplaintTest extends TestCase
      *
      * @return void
      */
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+    }
+
     public function test_belongs_to_order()
     {
         $complaint = Complaint::factory()->create();
@@ -39,5 +48,12 @@ class ComplaintTest extends TestCase
         $complaint = Complaint::factory()->create();
 
         $this->assertInstanceOf(User::class, $complaint->intermediary);
+    }
+
+    public function test_products_has_many_photos()
+    {
+        $complaint = Complaint::factory()->create();
+
+        $this->assertInstanceOf(Collection::class, $complaint->photos);
     }
 }

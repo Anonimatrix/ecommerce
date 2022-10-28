@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Cache\ProductCache;
+use App\Repositories\Cache\ProductCache;
 use App\Models\Product;
 use App\Repositories\EloquentRepositories\ProductRepository;
-use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;

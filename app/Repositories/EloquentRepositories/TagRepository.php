@@ -3,7 +3,7 @@
 namespace App\Repositories\EloquentRepositories;
 
 use App\Models\Tag;
-use App\Repositories\TagRepositoryInterface;
+use App\Repositories\Interfaces\TagRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;

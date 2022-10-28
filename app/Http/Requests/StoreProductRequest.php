@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
             'price' => 'required|numeric',
             'stock' => 'required|numeric',
             'shipp_active' => 'boolean',
-            'sucursal_code' => 'required_if:shipp_active,==,1',
+            'sucursal_id' => 'required_if:shipp_active,==,1',
             'subcategorie_id' => 'required|exists:subcategories,id',
             'photos' => 'required|array',
             'photos.*' => 'required|file|mimes:jpeg,jpg,gif,png',

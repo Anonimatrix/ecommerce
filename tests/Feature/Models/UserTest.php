@@ -41,4 +41,11 @@ class UserTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $user->orders);
     }
+
+    public function test_has_many_views()
+    {
+        $user = new User();
+
+        $this->assertInstanceOf(Collection::class, $user->views);
+    }
 }

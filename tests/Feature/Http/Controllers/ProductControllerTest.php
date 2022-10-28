@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\Adress;
 use App\Models\Product;
 use App\Models\Subcategorie;
 use App\Models\Tag;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Database\Seeders\RoleSeeder;
+use Inertia\Testing\AssertableInertia;
 
 class ProductControllerTest extends TestCase
 {
@@ -30,14 +32,15 @@ class ProductControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $this->get(route('products.index'))->assertSuccessful();
-        $this->get(route('products.show', $product->id))->assertSuccessful();
+        $this->get(route('products.show', $product->slug))->assertSuccessful();
         $this->get(route('products.search'), ['q' => 'foo'])->assertSuccessful();
         $this->post(route('products.store'), [])->assertRedirect(route('login'));
         $this->put(route('products.update', $product->id), [])->assertRedirect(route('login'));
         $this->patch(route('products.pause', $product->id))->assertRedirect(route('login'));
         $this->delete(route('products.destroy', $product->id))->assertRedirect(route('login'));
-        $this->get(route('products.edit', $product->id))->assertRedirect(route('login'));
+        $this->get(route('products.edit', $product->slug))->assertRedirect(route('login'));
         $this->get(route('products.create'))->assertRedirect(route('login'));
+        $this->get(route('products.checkout', $product->id))->assertRedirect(route('login'));
     }
 
     /**
@@ -70,7 +73,7 @@ class ProductControllerTest extends TestCase
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Products/Search')
-                    ->has('products', 1)
+                    ->has('pagination.data', 1)
             );
     }
 
@@ -350,7 +353,7 @@ class ProductControllerTest extends TestCase
 
         $product = Product::factory(['user_id' => $user->id])->create();
 
-        $this->actingAs($user)->get(route('products.edit', $product))
+        $this->actingAs($user)->get(route('products.edit', $product->slug))
             ->assertSuccessful()
             ->assertInertia(
                 fn (Assert $page) => $page
@@ -375,14 +378,126 @@ class ProductControllerTest extends TestCase
 
     public function test_show()
     {
-        $product = Product::factory()->create();
 
-        $this->get(route('products.show', $product))
+        $subcategorie = Subcategorie::factory()->create();
+
+        $tag = Tag::factory()->create();
+
+        $product = Product::factory(['subcategorie_id' => $subcategorie->id])->create();
+
+        $product->tags()->sync($tag);
+
+        $similarProduct = Product::factory(['subcategorie_id' => $subcategorie->id])->create();
+
+        $similarProduct->tags()->sync($tag);
+
+        $this->get(route('products.show', $product->slug))
             ->assertSuccessful()
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Products/Show')
                     ->has('product')
+                    ->has('similarProducts', 1)
+                    ->has('sellerProducts')
             );
+    }
+
+    public function test_index_own_products()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user 
+         */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        Product::factory(['user_id' => $user->id])->create();
+
+        $this->actingAs($user)->get(route('products.own'))
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Profile/Products')
+                    ->has('pagination.data', 1)
+            );
+    }
+
+    public function test_index_products_seller()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user 
+         */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $product = Product::factory(['user_id' => $user->id])->create();
+
+        $this->get(route('products.seller-products', ['user_id' => $user->id]), ['sort_by' => 'price'])
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Users/Products')
+                    ->has('pagination.data', 1)
+            );
+    }
+
+    public function test_sort_by()
+    {
+        $productHigherPrice = Product::factory(['price' => 100])->create();
+
+        $productLowerPrice = Product::factory(['price' => 33])->create();
+
+        $productMidPrice = Product::factory(['price' => 50])->create();
+
+        $this->get(route('products.index', ['sort_by' => 'price', 'sort_order' => 'ASC']))
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Products/Index')
+                    ->has(
+                        'pagination.data',
+                        3,
+                        fn (Assert $page) =>
+                        $page->where('price', $productLowerPrice->price)
+                            ->etc()
+                    )
+            );
+    }
+
+    public function test_filters()
+    {
+        $productHigherPrice = Product::factory(['price' => 100])->create();
+
+        $productLowerPrice = Product::factory(['price' => 50])->create();
+
+        $filterPrice = ['price', '>', 55];
+
+        $this->get(route('products.index', ['filters' => [$filterPrice]]))
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Products/Index')
+                    ->has(
+                        'pagination.data',
+                        1,
+                        fn (Assert $page) =>
+                        $page->where('price', $productHigherPrice->price)
+                            ->etc()
+                    )
+            );
+    }
+
+    public function test_checkout()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user 
+         */
+        $user = User::factory()->create();
+        $user->assignRole('user');
+
+        $product = Product::factory()->create();
+
+        $this->actingAs($user)->get(route('products.checkout', ['product_id' => $product->id]))
+            ->assertSuccessful()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Products/Checkout')
+                    ->has('product')
+            );;
     }
 }

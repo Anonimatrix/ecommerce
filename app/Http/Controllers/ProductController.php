@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\ProductCache;
-use App\Cache\SearchCacheRepository;
-use App\Cache\TagCache;
+use App\Repositories\Cache\ProductCache;
+use App\Repositories\Cache\SearchCacheRepository;
+use App\Repositories\Cache\TagCache;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Helpers\Slugify;
 use App\Http\Requests\SearchRequest;
 use App\Models\Search;
-use App\Traits\Http\ProductController\HasPhotos;
+use App\Repositories\Cache\UserCacheRepository;
+use App\Traits\Http\HasPhotos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -47,7 +48,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $pagination = Product::paginate(15);
+        $pagination = $this->repository->callFuncwithManagedSortAndFilter('paginate', null, [], 15);
 
         return Inertia::render('Products/Index', compact('pagination'));
     }
@@ -87,11 +88,22 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($slug, UserCacheRepository $userRepository)
+    {
+        $product = $this->repository->getBySlug($slug, true);
+
+        $similarProducts = $this->repository->getSimilarProducts($product->id, 7, ['tags_count', 'DESC'], []);
+
+        $sellerProducts = $this->repository->getSellerProducts($product->id, 7, ['tags_count', 'DESC'], [], $userRepository);
+
+        return Inertia::render('Products/Show', compact('product', 'similarProducts', 'sellerProducts'));
+    }
+
+    public function checkout()
     {
         $product = $this->product;
 
-        return Inertia::render('Products/Show', compact('product'));
+        return Inertia::render('Products/Checkout', compact('product'));
     }
 
     /**
@@ -100,11 +112,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($slug)
     {
-        $this->authorize('update', $this->product);
+        $product = $this->repository->getBySlug($slug, false);
 
-        $product = $this->product;
+        $this->authorize('update', $product);
 
         return Inertia::render('Products/Edit', compact('product'));
     }
@@ -163,14 +175,30 @@ class ProductController extends Controller
         return redirect()->back();
     }
 
-    public function search(SearchRequest $request, SearchCacheRepository $searchRepository)
+    public function search(SearchRequest $request, SearchCacheRepository $searchRepository, UserCacheRepository $userRepository)
     {
         $search = strtolower(Slugify::slugifyReverse($request->input('q')));
 
-        if (Auth::user()) $searchRepository->updateOrCreate(['content' => $search, 'user_id' => Auth::id()]);
+        if ($userRepository->authenticated()) $searchRepository->updateOrCreate(['content' => $search, 'user_id' => Auth::id()]);
 
-        $products = $this->repository->search($search);
+        $pagination = $this->repository->callFuncwithManagedSortAndFilter('search', ['tags_count', 'DESC'], [], $search, 15);
 
-        return Inertia::render('Products/Search', compact('products'));
+        return Inertia::render('Products/Search', compact('pagination'));
+    }
+
+    public function ownProducts()
+    {
+        $user_id = Auth::id();
+
+        $pagination = $this->repository->callFuncwithManagedSortAndFilter('getOfUserPaginated', null, [], $user_id, 8);
+
+        return Inertia::render('Profile/Products', compact('pagination'));
+    }
+
+    public function sellerProducts($user_id)
+    {
+        $pagination = $this->repository->callFuncwithManagedSortAndFilter('getOfUserPaginated', null, [], $user_id, 8);
+
+        return Inertia::render('Users/Products', compact('pagination'));
     }
 }

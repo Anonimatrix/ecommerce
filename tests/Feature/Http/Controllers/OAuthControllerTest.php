@@ -30,6 +30,8 @@ class OAuthControllerTest extends TestCase
             ->andReturn($this->faker->name)
             ->shouldReceive('getName')
             ->andReturn($this->faker->name)
+            ->shouldReceive('offsetGet')
+            ->andReturn($this->faker->name)
             ->shouldReceive('getEmail')
             ->andReturn($this->faker->email)
             ->shouldReceive('getAvatar')
@@ -79,7 +81,7 @@ class OAuthControllerTest extends TestCase
         $user = User::factory()->create(['password' => null]);
 
         $this->actingAs($user)->get(route('home'))
-            ->assertRedirect(route('oauth.set-password'));
+            ->assertRedirect(route('auth.set-info'));
     }
 
     public function test_redirect_to_home_if_user_have_password()
@@ -89,7 +91,27 @@ class OAuthControllerTest extends TestCase
          */
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get(route('oauth.set-password'))
+        $this->actingAs($user)->get(route('auth.set-info'))
             ->assertRedirect(route('home'));
+    }
+
+    public function test_set_info()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user
+         */
+        $user = User::factory()->create(['password' => null]);
+
+        $data = [
+            'password' => 'password',
+            'dni_type' => 'DNI',
+            'dni_number' => 45872821
+        ];
+
+        $this->actingAs($user)->post(route('auth.set-info'), $data)
+            ->assertRedirect();
+
+        unset($data['password']);
+        $this->assertDatabaseHas('users', $data);
     }
 }

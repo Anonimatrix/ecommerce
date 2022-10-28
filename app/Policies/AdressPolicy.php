@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Cache\AdressCacheRepository;
+use App\Repositories\Cache\AdressCacheRepository;
 use App\Models\Adress;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

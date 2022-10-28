@@ -29,7 +29,6 @@ class RoleControllerTest extends TestCase
      */
     public function test_store()
     {
-
         $user = User::factory()->create();
 
         $user->assignRole('role-manager');
@@ -51,8 +50,6 @@ class RoleControllerTest extends TestCase
 
     public function test_store_policy()
     {
-
-
         $user = User::factory()->create();
 
         $data = [
@@ -72,8 +69,6 @@ class RoleControllerTest extends TestCase
 
     public function test_create()
     {
-
-
         $user = User::factory()->create();
 
         $user->assignRole('role-manager');
@@ -123,8 +118,6 @@ class RoleControllerTest extends TestCase
 
     public function test_index()
     {
-
-
         $user = User::factory()->create();
 
         $user->assignRole('role-manager');
@@ -138,7 +131,7 @@ class RoleControllerTest extends TestCase
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->component('Role/Index')
-                    ->has('roles.data', 3)
+                    ->has('roles.data', Role::all()->count())
             );
     }
 
@@ -194,8 +187,6 @@ class RoleControllerTest extends TestCase
 
     public function test_edit()
     {
-
-
         $user = User::factory()->create();
 
         $user->assignRole('role-manager');
@@ -217,8 +208,6 @@ class RoleControllerTest extends TestCase
 
     public function test_edit_policy()
     {
-
-
         $role = Role::create(['name' => 'role']);
 
         $this->get(route('roles.edit', $role->id))

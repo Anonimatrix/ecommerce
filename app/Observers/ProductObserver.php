@@ -27,7 +27,6 @@ class ProductObserver
      */
     public function updated(Product $product)
     {
-        //
     }
 
     /**
@@ -38,7 +37,7 @@ class ProductObserver
      */
     public function deleted(Product $product)
     {
-        $product->photos->delete();
+        $product->photos->each->delete();
     }
 
     /**
@@ -60,6 +59,6 @@ class ProductObserver
      */
     public function forceDeleted(Product $product)
     {
-        $product->photos()->forceDelete();
+        $product->photos->each->forceDelete();
     }
 }

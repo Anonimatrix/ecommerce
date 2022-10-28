@@ -2,7 +2,7 @@
 
 namespace App\Repositories\EloquentRepositories;
 
-use App\Repositories\PermissionRepositoryInterface;
+use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use Spatie\Permission\Models\Permission;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 

@@ -4,9 +4,12 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Adress;
 use App\Models\Product;
+use App\Services\Shipping\ShippTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Inertia\Testing\AssertableInertia;
 use Mockery;
 use Tests\TestCase;
 
@@ -24,7 +27,7 @@ class ShippControllerTest extends TestCase
          */
 
         Http::fake([
-            'apisqa.andreani.com/*' => Http::response(['tarifaConIva' => [
+            "https://apisqa.andreani.com/v1/*" => Http::response(['tarifaConIva' => [
                 "seguroDistribucion" => "50",
                 "distribucion" => "700",
                 "total" => "750"
@@ -32,7 +35,7 @@ class ShippControllerTest extends TestCase
         ]);
 
 
-        $params = ['product_id' => $product->id, 'shipp_type' => 'shipp_to_adress', 'postal_code' => 7600];
+        $params = ['product_id' => $product->id, 'shipp_type' => ShippTypes::TO_ADRESS, 'postal_code' => 7600];
 
         $this->get(route('shipp.quote', $params))
             ->assertJson(['shipp_price' => 750]);
@@ -50,5 +53,27 @@ class ShippControllerTest extends TestCase
                     ]
                 ]
             ]);
+    }
+
+    public function test_payment_service_unavailable()
+    {
+        $product = Product::factory()->create();
+
+        /**
+         * @var object $http
+         */
+
+        Http::fake([
+            "https://apisqa.andreani.com/*" => Http::response(['message' => "unavailable"], 200)
+        ]);
+
+        $params = ['product_id' => $product->id, 'shipp_type' => ShippTypes::TO_ADRESS, 'postal_code' => 7600];
+
+        $this->get(route('shipp.quote', $params))
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Shipping/Error')
+                    ->has('status')
+            );
     }
 }

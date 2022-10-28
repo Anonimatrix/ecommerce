@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\Shipping\ShippTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShippQuoteRequest extends FormRequest
@@ -23,8 +24,10 @@ class ShippQuoteRequest extends FormRequest
      */
     public function rules()
     {
+        $shipp_types = ShippTypes::TO_ADRESS . '|' . ShippTypes::TO_SUCURSAL;
+
         return [
-            'shipp_type' => ['required',  'regex:/(shipp_to_adress|shipp_to_sucursal)/'],
+            'shipp_type' => ['required',  "regex:/($shipp_types)/"],
             'postal_code' => 'required|numeric'
         ];
     }

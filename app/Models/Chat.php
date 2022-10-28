@@ -9,6 +9,11 @@ class Chat extends Model
 {
     use HasFactory;
 
+    public $fillable = [
+        'chateable_id',
+        'chateable_type'
+    ];
+
     public function chateable()
     {
         return $this->morphTo();

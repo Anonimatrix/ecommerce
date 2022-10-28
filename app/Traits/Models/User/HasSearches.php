@@ -2,7 +2,7 @@
 
 namespace App\Traits\Models\User;
 
-use App\Cache\SearchCacheRepository;
+use App\Repositories\Cache\SearchCacheRepository;
 use App\Models\Search;
 
 trait HasSearches
@@ -12,7 +12,7 @@ trait HasSearches
         return $this->hasMany(Search::class);
     }
 
-    public function searchInSearches(SearchCacheRepository $searchRepository, $search, $limit)
+    public function searchInHistory(SearchCacheRepository $searchRepository, $search, $limit)
     {
         return $searchRepository->searchInUserSearchesWithLimit($search, $limit, $this);
     }

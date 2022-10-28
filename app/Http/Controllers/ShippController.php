@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\AdressCacheRepository;
-use App\Cache\ProductCache;
+use App\Repositories\Cache\AdressCacheRepository;
+use App\Repositories\Cache\ProductCache;
 use App\Http\Requests\ShippQuoteRequest;
 use App\Models\Shipp;
 use App\Http\Requests\StoreShippRequest;
 use App\Http\Requests\UpdateShippRequest;
-use App\Shipping\Contracts\ShippGatewayInterface;
+use App\Services\Shipping\Contracts\ShippGatewayInterface;
 use Illuminate\Http\Request;
 
 class ShippController extends Controller
@@ -52,9 +52,13 @@ class ShippController extends Controller
 
     public function quote(ShippQuoteRequest $request, ShippGatewayInterface $shippGateway)
     {
-        $prices = $shippGateway->quote($request->input('postal_code'), $this->product, $request->input('shipp_type'));
+        $res = $shippGateway->quote($request->input('postal_code'), $this->product, $request->input('shipp_type'));
 
-        return response()->json(['shipp_price' => $prices['tarifaConIva']['total']]);
+        if ($res['status_code'] >= 300) {
+            return response()->json(['status' => 'failed', 'message' => 'error getting info with shipments provider']);
+        }
+
+        return response()->json(['shipp_price' => $res['price']]);
     }
 
     public function listSucursales(ShippGatewayInterface $shippGateway)

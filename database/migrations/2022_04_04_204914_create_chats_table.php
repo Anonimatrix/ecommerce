@@ -17,7 +17,7 @@ class CreateChatsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('chateable_id');
             $table->unsignedBigInteger('chateable_type');
-            $table->integer('closed');
+            $table->integer('closed')->nullable();
             $table->timestamps();
         });
     }

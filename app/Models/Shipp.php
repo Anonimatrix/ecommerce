@@ -9,6 +9,13 @@ class Shipp extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'order_id',
+        'type',
+        'price',
+        'tracking_id'
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

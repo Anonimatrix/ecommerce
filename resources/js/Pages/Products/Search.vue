@@ -3,7 +3,12 @@
 </template>
 <script>
 export default {
-  props: ["products"],
+  computed: {
+    products() {
+      return this.pagination.data;
+    },
+  },
+  props: ["pagination"],
   mounted() {
     console.log(this.products);
   },

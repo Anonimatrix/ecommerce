@@ -16,8 +16,9 @@ class CreateShippsTable extends Migration
         Schema::create('shipps', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
+            $table->string('type');
             $table->string('tracking_id')->nullable();
-            $table->unsignedBigInteger('shipp_price')->nullable();
+            $table->unsignedBigInteger('price')->nullable();
             $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
         });

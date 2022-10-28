@@ -2,8 +2,9 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\EnsureUserDoesntHavePassword;
-use App\Http\Middleware\EnsureUserHasPassword;
+use App\Http\Middleware\EnsureUserMissingInfo;
+use App\Http\Middleware\EnsureUserHasAllInfo;
+use App\Http\Middleware\LoadRelationshipsUser;
 use App\Http\Middleware\UserHasPassword;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -41,6 +42,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+            LoadRelationshipsUser::class
         ],
 
         'api' => [
@@ -67,7 +69,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'auth.password' => EnsureUserHasPassword::class,
-        'auth.not-password' => EnsureUserDoesntHavePassword::class
+        'auth.info' => EnsureUserHasAllInfo::class,
+        'auth.not-info' => EnsureUserMissingInfo::class
     ];
 }

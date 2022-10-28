@@ -48,6 +48,7 @@ class RoleSeeder extends Seeder
         $roleManager = Role::create(['name' => 'role-manager']);
         $roleUser = Role::create(['name' => 'user']);
         $roleAdmin = Role::create(['name' => 'admin']);
+        $roleBanned = Role::create(['name' => 'banned']);
 
         $permissionsManager = Permission::where('name', 'LIKE', '%roles%')->get();
         $permissionsOwnProducts = Permission::where('name', 'LIKE', '%own products%')->get();

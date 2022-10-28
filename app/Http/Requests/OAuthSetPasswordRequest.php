@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Validation\Rule;
 
 class OAuthSetPasswordRequest extends FormRequest
 {
@@ -24,7 +26,9 @@ class OAuthSetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => 'min:8|required'
+            'password' => 'min:8|required',
+            'dni_type' => ['required', Rule::in(Config::get('user.data.dni_types'))],
+            'dni_number' => 'int|required'
         ];
     }
 }

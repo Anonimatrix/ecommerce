@@ -3,10 +3,12 @@
 namespace Tests\Feature\Shipping;
 
 use App\Models\Adress;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
-use App\Shipping\AndreaniGateway;
-use App\Shipping\ShippGatewayInterface;
+use App\Services\Shipping\AndreaniGateway;
+use App\Services\Shipping\Contracts\ShippGatewayInterface;
+use App\Services\Shipping\ShippTypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -44,10 +46,36 @@ class AndreaniGatewayTest extends TestCase
 
         $shippingGateway = app()->make(ShippGatewayInterface::class);
 
-        $quote = $shippingGateway->quote($buyerPostalCode, $product, 'shipp_to_adress');
+        $quote = $shippingGateway->quote($buyerPostalCode, $product, ShippTypes::TO_ADRESS);
 
         $this->assertNotEmpty($quote);
-        $this->assertArrayHasKey('tarifaConIva', $quote);
-        $this->assertArrayHasKey('total', $quote['tarifaConIva']);
+        $this->assertIsFloat($quote['price']);
+    }
+
+    public function test_create_shipment()
+    {
+        $order = Order::factory()->create();
+
+        $shippingGateway = app()->make(ShippGatewayInterface::class);
+
+        $shipment = $shippingGateway->createShipment($order, ShippTypes::TO_ADRESS);
+
+        $this->assertEquals($shipment['estado'], "Pendiente");
+        $this->assertCount(1, $shipment['bultos']);
+    }
+
+    public function test_get_label()
+    {
+        $order = Order::factory()->create();
+
+        $shippingGateway = app()->make(ShippGatewayInterface::class);
+
+        $shipment = $shippingGateway->createShipment($order, ShippTypes::TO_ADRESS);
+
+        $tracking_id = $shipment['bultos'][0]['numeroDeEnvio'];
+
+        $label = $shippingGateway->getLabel($tracking_id);
+
+        $this->assertEquals("application/pdf", $label->getHeader('Content-Type')[0]);
     }
 }

@@ -10,6 +10,8 @@ class Categorie extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = ['title'];
+
     public function subcategories()
     {
         return $this->hasMany(Subcategorie::class);

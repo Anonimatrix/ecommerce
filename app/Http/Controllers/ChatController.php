@@ -2,12 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Cache\ChatCacheRepository;
+use App\Repositories\Cache\MessageCacheRepository;
 use App\Models\Chat;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
+use App\Models\Message;
+use App\Repositories\Cache\UserCacheRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
+    protected $repository;
+    protected $chat;
+
+    public function setChat(Request $request)
+    {
+        $chat_id = $request->route('chat_id');
+
+        if ($chat_id) {
+            $this->chat = $this->repository->getById($chat_id);
+        }
+    }
+
+    public function __construct(ChatCacheRepository $chatCache, MessageCacheRepository $messageCache, Request $request)
+    {
+        $this->repository = $chatCache;
+        $this->messageRepository = $messageCache;
+        $this->setChat($request);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +62,6 @@ class ChatController extends Controller
      */
     public function store(StoreChatRequest $request)
     {
-        //
     }
 
     /**
@@ -45,9 +70,17 @@ class ChatController extends Controller
      * @param  \App\Models\Chat  $chat
      * @return \Illuminate\Http\Response
      */
-    public function show(Chat $chat)
+    public function show(UserCacheRepository $userRepository)
     {
-        //
+        $chat = $this->chat;
+
+        $user = $userRepository->authenticated();
+
+        if ($user && $user->hasRole('admin')) {
+            $chat->load(['messages' => fn ($q) => $q->withTrashed()]);
+        }
+
+        return Inertia::render('Chats/Show', compact('chat'));
     }
 
     /**

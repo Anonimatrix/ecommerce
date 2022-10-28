@@ -3,6 +3,10 @@
 use App\Http\Controllers\AdressController;
 use App\Http\Controllers\Auth\OAuthLoginController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -12,6 +16,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShippController;
 use App\Http\Controllers\SubcategorieController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ViewController;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -26,55 +32,20 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::middleware(['auth.password'])->group(function () {
+require __DIR__ . './webhooks/orders.php';
+
+Route::middleware(['auth.info'])->group(function () {
     Route::get('/', [PageController::class, 'home'])->name('home');
 
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-        Route::resource('products', ProductController::class)->parameters([
-            'products' => 'product_id'
-        ])->except(['show', 'index']);
-
-        Route::patch('products/{product_id}/pause', [ProductController::class, 'pause'])->name('products.pause');
+        require_dir(realpath(__DIR__ . '/authenticated'));
     });
 
-    Route::resource('products', ProductController::class)->parameters([
-        'products' => 'product_id'
-    ])->only(['show', 'index']);
-
-    Route::resource('roles', RoleController::class)->parameters([
-        'roles' => 'role_id'
-    ])->except(['show']);
-
-    Route::get('products-search', [ProductController::class, 'search'])->name('products.search');
-
-    Route::resource('subcategories', SubcategorieController::class)->parameters([
-        'subcategories' => 'subcategorie_id'
-    ]);
-
-    Route::resource('categories', CategorieController::class);
-
-    Route::get('/history', [SearchController::class, 'historySearch'])->name('searches.history');
-
-    Route::get('/most-searched', [SearchController::class, 'mostSearched'])->name('searches.most-searched');
-
-    Route::get('/autosuggest', [SearchController::class, 'autosuggest'])->name('searches.autosuggest');
-
-    Route::resource('adresses', AdressController::class)->middleware('auth:sanctum')->parameters([
-        'adresses' => 'adress_id'
-    ]);
-
-    Route::get('/auth/{driver}/redirect',  [OAuthLoginController::class, 'redirectToProvider'])->name('oauth.redirect');
-
-    Route::get('/auth/{driver}/callback', [OAuthLoginController::class, 'handleProviderCallback'])->name('oauth.callback');
-
-    Route::get('/tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
-
-    Route::get('products/{product_id}/shipp-quote', [ShippController::class, 'quote'])->name('shipp.quote');
-    Route::get('products/{adress_id}/shipp-list-sucursales', [ShippController::class, 'listSucursales'])->name('shipp.list-sucursales');
+    require_dir(realpath(__DIR__ . '/common'));
 });
 
-Route::middleware(['auth.not-password'])->group(function () {
-    Route::get('/auth/set-password', [OAuthLoginController::class, 'setPasswordView'])->name('oauth.set-password-view');
+Route::middleware(['auth.not-info'])->group(function () {
+    Route::get('/auth/set-info', [OAuthLoginController::class, 'setInfoView'])->name('auth.set-info-view');
 
-    Route::post('/auth/set-password', [OAuthLoginController::class, 'setPassword'])->name('oauth.set-password');
+    Route::post('/auth/set-info', [OAuthLoginController::class, 'setInfo'])->name('auth.set-info');
 });

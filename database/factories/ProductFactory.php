@@ -20,9 +20,9 @@ class ProductFactory extends Factory
             'user_id' => User::factory()->create(),
             'subcategorie_id' => Subcategorie::factory()->create(),
             'shipp_active' => '1',
-            'sucursal_code' => 'MDQ',
+            'sucursal_id' => 10035,
             'description' => $this->faker->text(800),
-            'stock' => $this->faker->numberBetween(0, 20),
+            'stock' => $this->faker->numberBetween(1, 20),
             'price' => $this->faker->numberBetween(0, 20000),
             'paused_at' => null
         ];

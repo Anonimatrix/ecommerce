@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Adress;
 use App\Models\Product;
 use App\Models\User;
+use App\Statuses\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -22,7 +23,7 @@ class OrderFactory extends Factory
             'buyer_id' => User::factory()->create(),
             'product_id' => $product->id,
             'adress_id' => Adress::factory()->create(),
-            'status' => 'pending_payout',
+            'status' => OrderStatus::PENDING,
             'quantity' => $this->faker->numberBetween(1, 20),
             'unit_price' => $product->price
         ];

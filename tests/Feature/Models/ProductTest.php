@@ -26,6 +26,13 @@ class ProductTest extends TestCase
         $this->assertInstanceOf(Collection::class, $product->tags);
     }
 
+    public function test_products_has_count_views()
+    {
+        $product = new Product();
+
+        $this->assertIsInt($product->viewsCount);
+    }
+
     public function test_products_has_many_photos()
     {
         $product = $product = new Product();

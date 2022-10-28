@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->unsignedInteger('stock');
             $table->text('description');
             $table->unsignedInteger('price');
-            $table->string('sucursal_code')->nullable();
+            $table->string('sucursal_id')->nullable();
             $table->unsignedTinyInteger('shipp_active')->nullable();
             $table->timestamp('paused_at')->nullable();
             $table->foreign('user_id')->references('id')->on('users');

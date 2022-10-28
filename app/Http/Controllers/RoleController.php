@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\PermissionCacheRepository;
-use App\Cache\RoleCacheRepository;
+use App\Repositories\Cache\PermissionCacheRepository;
+use App\Repositories\Cache\RoleCacheRepository;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use Illuminate\Http\Request;

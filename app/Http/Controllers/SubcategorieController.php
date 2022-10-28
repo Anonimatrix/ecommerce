@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\SubcategorieCacheRepository;
+use App\Repositories\Cache\SubcategorieCacheRepository;
 use App\Models\Subcategorie;
 use App\Http\Requests\StoreSubcategorieRequest;
 use App\Http\Requests\UpdateSubcategorieRequest;
@@ -70,7 +70,7 @@ class SubcategorieController extends Controller
      */
     public function show()
     {
-        $products = $this->repository->paginatedProductsOfSubcategorie(10, $this->subcategorie);
+        $products = $this->repository->callFuncwithManagedSortAndFilter('paginatedProductsOfSubcategorie', null, [], 10, $this->subcategorie);
 
         return Inertia::render('Subcategories/Show', ['products' => $products, 'subcategorie' => $this->subcategorie]);
     }

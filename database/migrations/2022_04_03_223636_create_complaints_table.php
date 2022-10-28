@@ -16,7 +16,7 @@ class CreateComplaintsTable extends Migration
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('intermediary_id');
+            $table->unsignedBigInteger('intermediary_id')->nullable();
             $table->string('reason');
             $table->string('status');
             $table->foreign('order_id')->references('id')->on('orders');

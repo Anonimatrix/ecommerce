@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\TagCache;
+use App\Repositories\Cache\TagCache;
 use App\Http\Requests\SearchTagRequest;
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;

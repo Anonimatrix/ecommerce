@@ -9,6 +9,15 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'buyer_id',
+        'product_id',
+        'adress_id',
+        'quantity',
+        'status',
+        'unit_price'
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -42,5 +51,10 @@ class Order extends Model
     public function complaint()
     {
         return $this->hasOne(Complaint::class);
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->unit_price * $this->quantity + ($this->shipp_price ?? 0);
     }
 }

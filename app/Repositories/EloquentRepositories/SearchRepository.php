@@ -4,7 +4,8 @@ namespace App\Repositories\EloquentRepositories;
 
 use App\Models\Search;
 use App\Models\User;
-use App\Repositories\SearchRepositoryInterface;
+use App\Repositories\Cache\UserCacheRepository;
+use App\Repositories\Interfaces\SearchRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
@@ -33,5 +34,15 @@ class SearchRepository extends BaseRepository implements SearchRepositoryInterfa
     public function updateOrCreate(array $data)
     {
         return $this->model->updateOrCreate($data);
+    }
+
+    public function latestOfAuthenticated(UserCacheRepository $userRepository)
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = $userRepository->authenticated();
+
+        return $user->searches()->latest('id')->first();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\OrderRepository;
 use App\Traits\Models\User\HasSearches;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,11 +30,14 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'last_name',
+        'dni_type',
+        'dni_number',
         'username',
         'email',
         'password',
         'role_id',
-        'email_verified_at'
+        'email_verified_at',
     ];
 
     /**
@@ -73,11 +77,31 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'buyer_id');
+    }
+
+    public function views()
+    {
+        return $this->hasMany(View::class);
     }
 
     public function adresses()
     {
         return $this->hasMany(Adress::class);
+    }
+
+    public function getMoneyAttribute()
+    {
+        $money = 0;
+
+        OrderRepository::getCompletedSellsForUser($this)->each(function ($order) use (&$money) {
+            $money += $order->payment->amount;
+        });
+
+        OrderRepository::getRefundedBuysForUser($this)->each(function ($order) use (&$money) {
+            $money += $order->payment->amount;
+        });
+
+        return $money;
     }
 }

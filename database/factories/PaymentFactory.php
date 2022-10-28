@@ -14,10 +14,11 @@ class PaymentFactory extends Factory
      */
     public function definition()
     {
+        $order = Order::factory()->create();
         return [
-            'order_id' => Order::factory()->create(),
+            'order_id' => $order->id,
             'type' => 'ml',
-            'amount' => $this->faker->numberBetween(1, 2000)
+            'amount' => $order->product->price
         ];
     }
 }

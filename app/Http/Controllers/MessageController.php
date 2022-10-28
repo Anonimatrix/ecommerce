@@ -2,12 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Cache\MessageCacheRepository;
+use App\Filters\Filters;
 use App\Models\Message;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MessageController extends Controller
 {
+
+    protected $repository;
+    protected $message;
+
+    public function setMessage(Request $request)
+    {
+        $message_id = $request->route('message_id');
+
+        if ($message_id) {
+            $this->message = $this->repository->getById($message_id);
+        }
+    }
+
+    public function __construct(MessageCacheRepository $messageCache, Request $request)
+    {
+        $this->repository = $messageCache;
+        $this->setMessage($request);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +39,6 @@ class MessageController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -34,9 +57,11 @@ class MessageController extends Controller
      * @param  \App\Http\Requests\StoreMessageRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreMessageRequest $request)
+    public function store(StoreMessageRequest $request, $chat_id)
     {
-        //
+        $created = $this->repository->create(['chat_id' => $chat_id, 'content' => $request->content]);
+
+        return response()->json(compact('created'));
     }
 
     /**
@@ -79,8 +104,10 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Message $message)
+    public function destroy()
     {
-        //
+        $deleted = $this->repository->delete($this->message);
+
+        return response()->json(compact('deleted'));
     }
 }

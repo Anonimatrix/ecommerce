@@ -9,6 +9,12 @@ class Complaint extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'order_id',
+        'reason',
+        'status'
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -22,5 +28,11 @@ class Complaint extends Model
     public function intermediary()
     {
         return $this->belongsTo(User::class, 'intermediary_id');
+    }
+
+
+    public function photos()
+    {
+        return $this->morphMany(Photo::class, 'photoable');
     }
 }

@@ -13,7 +13,7 @@ class StoreComplaintRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class StoreComplaintRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'order_id' => 'required|integer|exists:orders,id',
+            'reason' => 'required|max:255|string',
+            'photos' => 'required|array',
+            'photos.*' => 'required|file|mimes:jpeg,jpg,gif,png',
         ];
     }
 }

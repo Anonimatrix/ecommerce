@@ -5,6 +5,7 @@ namespace Tests\Feature\Models;
 use App\Models\Chat;
 use App\Models\Complaint;
 use App\Models\Order;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,6 +19,13 @@ class ChatTest extends TestCase
      *
      * @return void
      */
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+    }
+
     public function test_has_one_order()
     {
         $order = Order::factory()->create();

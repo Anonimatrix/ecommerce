@@ -30,7 +30,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order)
     {
-        //
+        return $user->can('view foreign order') || $order->product->user->id === $user->id || $order->buyer->id === $user->id;
     }
 
     /**

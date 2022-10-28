@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\AdressCacheRepository;
+use App\Repositories\Cache\AdressCacheRepository;
 use App\Models\Adress;
 use App\Http\Requests\StoreAdressRequest;
 use App\Http\Requests\UpdateAdressRequest;
+use App\Repositories\Cache\UserCacheRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -17,7 +18,7 @@ class AdressController extends Controller
 
     public function setAdress(Request $request)
     {
-        $adress_id = $request->route()->parameter('adress_id');
+        $adress_id = $request->adress_id;
 
         if ($adress_id) {
             $this->adress = $this->repository->getById($adress_id);
@@ -35,9 +36,9 @@ class AdressController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(UserCacheRepository $userRepository)
     {
-        $adresses = $this->repository->paginatedUserAdresses(10, Auth::user());
+        $adresses = $this->repository->paginatedUserAdresses(10, $userRepository->authenticated());
 
         return Inertia::render('Adress/Index', compact('adresses'));
     }

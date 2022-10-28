@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Statuses\ComplaintStatus;
 use App\Models\Order;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\Permission\Models\Role;
 
 class ComplaintFactory extends Factory
 {
@@ -16,11 +17,14 @@ class ComplaintFactory extends Factory
      */
     public function definition()
     {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
         return [
             'order_id' => Order::factory()->create(),
-            'intermediary_id' => User::factory(['role_id' => Role::factory(['name' => 'admin'])->create()]),
+            'intermediary_id' => $user,
             'reason' => 'not paid me',
-            'status' => 'initialized'
+            'status' => ComplaintStatus::STARTED
         ];
     }
 }

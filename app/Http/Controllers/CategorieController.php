@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Cache\CategorieCache;
+use App\Repositories\Cache\CategorieCache;
+use App\Filters\Filters;
+use App\Http\Requests\SearchCategorieRequest;
 use App\Models\Categorie;
 use App\Http\Requests\StoreCategorieRequest;
 use App\Http\Requests\UpdateCategorieRequest;
@@ -36,9 +38,11 @@ class CategorieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(SearchCategorieRequest $request)
     {
-        $categories = $this->repository->allOrderByTitle();
+        $searchString = $request->input('q') ?? '';
+
+        $categories = $this->repository->callFuncwithManagedSortAndFilter('all', ['title', 'ASC'], [Filters::search_by_title($searchString)]);
 
         return Inertia::render('Categories/Index', compact('categories'));
     }
@@ -50,7 +54,7 @@ class CategorieController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Categories/Create');
     }
 
     /**
@@ -61,7 +65,9 @@ class CategorieController extends Controller
      */
     public function store(StoreCategorieRequest $request)
     {
-        //
+        $this->repository->create($request->validated());
+
+        return redirect()->back();
     }
 
     /**
@@ -81,9 +87,11 @@ class CategorieController extends Controller
      * @param  \App\Models\Categorie  $categorie
      * @return \Illuminate\Http\Response
      */
-    public function edit(Categorie $categorie)
+    public function edit()
     {
-        //
+        $categorie = $this->categorie;
+
+        return Inertia::render('Categories/Edit', compact('categorie'));
     }
 
     /**
@@ -93,9 +101,11 @@ class CategorieController extends Controller
      * @param  \App\Models\Categorie  $categorie
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategorieRequest $request, Categorie $categorie)
+    public function update(UpdateCategorieRequest $request)
     {
-        //
+        $this->repository->update($request->validated(), $this->categorie);
+
+        return redirect()->back();
     }
 
     /**
@@ -104,8 +114,32 @@ class CategorieController extends Controller
      * @param  \App\Models\Categorie  $categorie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categorie $categorie)
+    public function destroy()
     {
-        //
+        if (count($this->categorie->subcategories) == 0) {
+            return $this->repository->delete($this->categorie);
+        }
+
+        return response()->json(['status' => 'failed', 'message' => 'for destroy categorie this was to be void of subcategories'], 500);
+    }
+
+    public function moveSubcategoriesToOtherCategorie(Request $request)
+    {
+        $request->validate([
+            'to_categorie_id' => 'required|exists:categories,id|integer'
+        ]);
+
+        $to_categorie_id = $request->to_categorie_id;
+
+        $this->repository->moveSubcategoriesToOtherCategorie($this->categorie->id, $to_categorie_id);
+
+        return redirect()->back();
+    }
+
+    public function removeAllForCategorie()
+    {
+        $this->repository->removeSubcategoriesOfCategorie($this->categorie);
+
+        return redirect()->back();
     }
 }

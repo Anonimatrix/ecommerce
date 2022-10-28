@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Statuses\OrderStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,6 +52,21 @@ class Product extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function views()
+    {
+        return $this->hasMany(View::class);
+    }
+
+    public function getViewsCountAttribute()
+    {
+        return $this->views()->count();
+    }
+
+    public function getSellsAttribute()
+    {
+        return $this->orders()->where('status', OrderStatus::COMPLETED)->count();
     }
 
     public function pause()

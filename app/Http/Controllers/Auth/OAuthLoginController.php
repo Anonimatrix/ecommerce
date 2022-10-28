@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Repositories\Cache\UserCacheRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OAuthSetPasswordRequest;
 use App\Models\User;
@@ -9,12 +10,20 @@ use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 class OAuthLoginController extends Controller
 {
+    protected $repository;
+
+    public function __construct(UserCacheRepository $userCache, Request $request)
+    {
+        $this->repository = $userCache;
+    }
+
     public function redirectToProvider($driver)
     {
         return Socialite::driver($driver)->redirect();
@@ -24,11 +33,15 @@ class OAuthLoginController extends Controller
     {
         $userSocialite = Socialite::driver($driver)->user();
 
-        $user = User::where('email', $userSocialite->getEmail())->first();
+        $user = $this->repository->getByEmail($userSocialite->getEmail());
 
         if (!$user) {
-            $user = User::create([
-                'name' => $userSocialite->getName(),
+            $first_name_key = $driver == 'google' ? 'given_name' : 'first_name';
+            $last_name_key = $driver == 'google' ? 'family_name' : 'last_name';
+
+            $user = $this->repository->create([
+                'name' => $userSocialite[$first_name_key],
+                'last_name' => $userSocialite[$last_name_key],
                 'email' => $userSocialite->getEmail(),
                 'username' => $userSocialite->getNickname() ?? $userSocialite->getName(),
                 'email_verified_at' => Carbon::now(),
@@ -36,26 +49,23 @@ class OAuthLoginController extends Controller
             ]);
         }
 
-        Auth::login($user);
+        $this->repository->login($user);
 
-        return redirect()->route('oauth.set-password-view');
+        return redirect()->route('auth.set-info-view');
     }
 
-    public function setPasswordView()
+    public function setInfoView()
     {
-        return Inertia::render('Auth/SetPassword');
+        $dni_types = Config::get('user.data.dni_types');
+
+        return Inertia::render('Auth/SetPassword', compact('dni_types'));
     }
 
-    public function setPassword(OAuthSetPasswordRequest $request)
+    public function setInfo(OAuthSetPasswordRequest $request)
     {
-        /**
-         * @var \App\Models\User $user
-         */
-        $user = Auth::user();
+        $info = $request->only('password', 'dni_type', 'dni_number');
 
-        $user->password = Hash::make($request->input('password'));
-
-        $user->save();
+        $this->repository->setMissingInfo($info);
 
         return redirect(RouteServiceProvider::HOME);
     }

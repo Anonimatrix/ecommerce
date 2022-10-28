@@ -2,7 +2,7 @@
 
 namespace App\Repositories\EloquentRepositories;
 
-use App\Repositories\RoleRepositoryInterface;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role as ModelsRole;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 

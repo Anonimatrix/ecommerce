@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Repositories\Cache\AdressCacheRepository;
 use App\Models\Adress;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,7 +33,7 @@ class AdressControllerTest extends TestCase
     public function test_store()
     {
         /**
-         * @var \Illuminate\Contracts\Auth\Authenticatable $user
+         * @var \App\Models\User $user
          */
 
         $user = User::factory()->create();
@@ -46,6 +47,8 @@ class AdressControllerTest extends TestCase
 
         $this->actingAs($user)->post(route('adresses.store'), $data)
             ->assertStatus(302);
+
+        $user->refresh();
 
         $this->assertInstanceOf(Adress::class, $user->adresses[0]);
     }

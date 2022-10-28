@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use Illuminate\Support\Str;
+use Inertia\Testing\AssertableInertia;
 
 class SearchControllerTest extends TestCase
 {
@@ -131,5 +132,21 @@ class SearchControllerTest extends TestCase
                     'errors'
                 ]
             ])->assertJsonFragment(['errors' => ["q" => ["The q field is required."]]]);
+    }
+
+    public function test_history_page()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user
+         */
+
+        $user = User::factory()->create();
+
+        Search::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->get(route('searches.history-page', ['q' => 'foo']))
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Searches/History')
+                ->has('products', 1));
     }
 }
