@@ -90,6 +90,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Address::class);
     }
 
+    public function getPendingMoneyAttribute()
+    {
+        $money = 0;
+
+        OrderRepository::getPendingSellsForUser($this)->each(function ($order) use (&$money) {
+            $money += $order->payment->amount;
+        });
+
+        return $money;
+    }
+
     public function getMoneyAttribute()
     {
         $money = 0;

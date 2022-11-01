@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('buyer_id')->references('id')->on('users');
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->foreign('product_id')->references('id')->on('products');
+            $table->timestamp('status_changed_at')->nullable();
             $table->timestamps();
         });
     }

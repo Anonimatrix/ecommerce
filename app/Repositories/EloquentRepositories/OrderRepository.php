@@ -9,7 +9,10 @@ use App\Statuses\OrderStatus;
 use App\Statuses\PaymentStatus;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 
 class OrderRepository extends BaseRepository implements OrderRepositoryInterface
@@ -20,6 +23,20 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     {
         parent::__construct($order);
         $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @Override
+     */
+    public function update(array $data, Model|int $model)
+    {
+        $instance = $this->checkInstanceOrId($model);
+
+        if ($data['status'] && $data['status'] !== $instance->status) {
+            $data['status_changed_at'] = Carbon::now();
+        }
+
+        return parent::update($data, $instance);
     }
 
     public function buysForAuthenticated(int $quantity)
@@ -46,6 +63,30 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $orders;
     }
 
+    public function getPendingSellsForUser(User $user)
+    {
+        $products = $user->products;
+
+        $products_ids = $products->pluck('id')->all();
+
+        $days_to_have_money_available = Config::get('orders.days_to_have_money_available');
+
+        $orders = Order::with('payment')
+            ->whereIn('product_id', $products_ids)
+            ->where('status', OrderStatus::PAYED)
+            ->orWhere('status', OrderStatus::SHIPPED)
+            ->orWhere('status', OrderStatus::COMPLETED)
+            ->where('status_changed_at', '>=', Carbon::now()->subDays($days_to_have_money_available))
+            ->whereHas(
+                'payment',
+                fn ($query) => $query->where('status', PaymentStatus::COMPLETED)
+                    ->whereNull('withdrawed_at')
+            )
+            ->get();
+
+        return $orders;
+    }
+
     public function getCompletedSellsForUser(User $user)
     {
         $products = $user->products;
@@ -55,6 +96,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $orders = Order::with('payment')
             ->whereIn('product_id', $products_ids)
             ->where('status', OrderStatus::COMPLETED)
+            ->where('status_changed_at', '<', Carbon::now()->subDays(8))
             ->whereHas(
                 'payment',
                 fn ($query) => $query->where('status', PaymentStatus::COMPLETED)

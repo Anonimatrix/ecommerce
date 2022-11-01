@@ -45,8 +45,9 @@ class UserController extends Controller
     public function getMoney()
     {
         $money = $this->authenticated->money;
+        $pending_money = $this->authenticated->pending_money;
 
-        return response()->json(compact('money'));
+        return response()->json(compact('money', 'pending_money'));
     }
 
     public function withdraw(PaymentGatewayInterface $paymentGateway)

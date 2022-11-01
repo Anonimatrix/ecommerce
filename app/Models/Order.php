@@ -15,7 +15,8 @@ class Order extends Model
         'address_id',
         'quantity',
         'status',
-        'unit_price'
+        'unit_price',
+        'status_changed_at'
     ];
 
     public function product()

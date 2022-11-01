@@ -57,6 +57,15 @@ class OrderCacheRepository extends BaseCache implements OrderRepositoryInterface
         });
     }
 
+    public function getPendingSellsForUser(User $user)
+    {
+        $user_id = $user->id;
+
+        return $this->cache->tags([$this->key/* . "s-buyer-id:$user_id"*/])->remember($this->getRememberString(true, null, "-pending-orders|user-$user_id"), self::TTL, function () use ($user) {
+            return $this->repository->getPendingSellsForUser($user);
+        });
+    }
+
     public function getPendingToChangeShippStatus()
     {
         return $this->repository->getPendingToChangeShippStatus();
