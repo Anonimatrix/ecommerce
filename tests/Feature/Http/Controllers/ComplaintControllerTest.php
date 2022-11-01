@@ -29,6 +29,22 @@ class ComplaintControllerTest extends TestCase
         $this->seed(RoleSeeder::class);
     }
 
+    public function test_create()
+    {
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable $user 
+         */
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
+        $this->actingAs($user)->get(route('complaints.create'))
+            ->assertSuccessful()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Complaints/Create')
+            );
+    }
+
     /**
      * A basic feature test example.
      *

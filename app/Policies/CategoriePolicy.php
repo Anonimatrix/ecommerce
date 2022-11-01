@@ -41,7 +41,7 @@ class CategoriePolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->can('create categories');
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoriePolicy
      */
     public function update(User $user, Categorie $categorie)
     {
-        //
+        return $user->can('edit categories');
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoriePolicy
      */
     public function delete(User $user, Categorie $categorie)
     {
-        //
+        return $user->can('delete categories');
     }
 
     /**

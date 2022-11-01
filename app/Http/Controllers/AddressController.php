@@ -87,7 +87,7 @@ class AddressController extends Controller
      */
     public function edit()
     {
-        $this->authorize('owner', $this->address);
+        $this->authorize('edit', $this->address);
 
         $address = $this->address;
 
@@ -103,7 +103,7 @@ class AddressController extends Controller
      */
     public function update(UpdateAddressRequest $request)
     {
-        $this->authorize('owner', $this->address);
+        $this->authorize('edit', $this->address);
 
         $this->repository->update($request->only(['postal_code', 'country', 'city', 'address']), $this->address);
 
@@ -118,7 +118,7 @@ class AddressController extends Controller
      */
     public function destroy()
     {
-        $this->authorize('owner', $this->address);
+        $this->authorize('delete', $this->address);
 
         $this->address->delete();
 

@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Chat;
+use App\Models\Complaint;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -30,7 +32,28 @@ class ChatPolicy
      */
     public function view(User $user, Chat $chat)
     {
-        //
+        $chateable = $chat->chateable;
+        if ($chateable instanceof Complaint) {
+            return in_array(
+                $user->id,
+                [
+                    $chateable->intermediary->id,
+                    $chateable->order->buyer->id,
+                    $chateable->order->product->user->id
+                ]
+            ) || $user->can('view foreign chat');
+        }
+
+        if ($chateable instanceof Order) {
+            return in_array(
+                $user->id,
+                [
+                    $chateable->complaint->intermediary->id,
+                    $chateable->buyer->id,
+                    $chateable->product->user->id
+                ]
+            ) || $user->can('view foreign chat');
+        }
     }
 
     /**

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 
-Route::resource('complaints', ComplaintController::class)->only(['store', 'show', 'index'])
+Route::resource('complaints', ComplaintController::class)->only(['store', 'show', 'index', 'create'])
     ->parameters([
         'complaints' => 'complaint_id'
     ]);

@@ -51,6 +51,8 @@ class ComplaintController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny');
+
         $pagination = $this->repository->paginate(15, ['id', 'ASC'], [Filters::only_dont_taken()]);
 
         return Inertia::render('Complaints/Index', compact('pagination'));
@@ -58,6 +60,8 @@ class ComplaintController extends Controller
 
     public function take()
     {
+        $this->authorize('take');
+
         $this->repository->update(['status' => ComplaintStatus::TAKEN], $this->complaint);
 
         return response()->json(['status' => 'updated'], 201);
@@ -70,7 +74,7 @@ class ComplaintController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Complaints/Create');
     }
 
     /**
@@ -79,12 +83,22 @@ class ComplaintController extends Controller
      * @param  \App\Http\Requests\StoreComplaintRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreComplaintRequest $request)
+    public function store(StoreComplaintRequest $request, OrderCacheRepository $orderRepository)
     {
-        //TODO policy user is buyer and order is completed
+        $order_id = $request->input('order_id');
+        $order = $orderRepository->getById($order_id);
+
+        $this->authorize('create', $order);
+
+        if ($order->status !== OrderStatus::COMPLETED) {
+            abort(422, 'you cant create complaint if order is not completed');
+        }
+
+        $reason = $request->input('reason');
+
         $data = [
-            'order_id' => $request->input('order_id'),
-            'reason' => $request->input('reason'),
+            'order_id' => $order_id,
+            'reason' => $reason,
             'status' => ComplaintStatus::STARTED
         ];
 
@@ -112,6 +126,8 @@ class ComplaintController extends Controller
 
     public function cancel()
     {
+        $this->authorize('cancel');
+
         $complaint = $this->complaint;
 
         $this->repository->update(['status' => ComplaintStatus::CANCELED], $complaint);
@@ -121,6 +137,8 @@ class ComplaintController extends Controller
 
     public function refund()
     {
+        $this->authorize('refund');
+
         $complaint = $this->complaint;
 
         $this->paymentRepository->update(['status' => PaymentStatus::REFUNDED], $complaint->order->payment);

@@ -54,6 +54,7 @@ class CategorieController extends Controller
      */
     public function create()
     {
+        $this->authorize('create');
         return Inertia::render('Categories/Create');
     }
 
@@ -65,6 +66,7 @@ class CategorieController extends Controller
      */
     public function store(StoreCategorieRequest $request)
     {
+        $this->authorize('create');
         $this->repository->create($request->validated());
 
         return redirect()->back();
@@ -89,6 +91,7 @@ class CategorieController extends Controller
      */
     public function edit()
     {
+        $this->authorize('update');
         $categorie = $this->categorie;
 
         return Inertia::render('Categories/Edit', compact('categorie'));
@@ -103,6 +106,7 @@ class CategorieController extends Controller
      */
     public function update(UpdateCategorieRequest $request)
     {
+        $this->authorize('update');
         $this->repository->update($request->validated(), $this->categorie);
 
         return redirect()->back();
@@ -116,6 +120,7 @@ class CategorieController extends Controller
      */
     public function destroy()
     {
+        $this->authorize('delete');
         if (count($this->categorie->subcategories) == 0) {
             $deleted = $this->repository->delete($this->categorie);
             return response()->json(compact('deleted'));
@@ -126,6 +131,7 @@ class CategorieController extends Controller
 
     public function moveSubcategoriesToOtherCategorie(Request $request)
     {
+        $this->authorize('update');
         $request->validate([
             'to_categorie_id' => 'required|exists:categories,id|integer'
         ]);
@@ -139,6 +145,7 @@ class CategorieController extends Controller
 
     public function removeAllForCategorie()
     {
+        $this->authorize('update');
         $this->repository->removeSubcategoriesOfCategorie($this->categorie);
 
         return redirect()->back();

@@ -74,9 +74,11 @@ class ChatController extends Controller
     {
         $chat = $this->chat;
 
+        $this->authorize('view', $chat);
+
         $user = $userRepository->authenticated();
 
-        if ($user && $user->hasRole('admin')) {
+        if ($user && $user->can('view trashed messages')) {
             $chat->load(['messages' => fn ($q) => $q->withTrashed()]);
         }
 

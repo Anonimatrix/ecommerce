@@ -30,8 +30,13 @@ class AddressPolicy
         $this->setAddress($request);
     }
 
-    public function owner(User $user, Address $address)
+    public function edit(User $user, Address $address)
     {
-        return $address->user->id === $user->id;
+        return $address->user->id === $user->id || $user->can('edit foreign address');
+    }
+
+    public function delete(User $user, Address $address)
+    {
+        return $address->user->id === $user->id || $user->can('delete foreign address');
     }
 }

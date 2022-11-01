@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Complaint;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -18,7 +19,22 @@ class ComplaintPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->can('view complaints');
+    }
+
+    public function take(User $user)
+    {
+        return $user->can('take complaint');
+    }
+
+    public function refund(User $user)
+    {
+        return $user->can('refund complaint');
+    }
+
+    public function cancel(User $user)
+    {
+        return $user->can('cancel complaint');
     }
 
     /**
@@ -39,9 +55,9 @@ class ComplaintPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user, Order $order)
     {
-        //
+        return $user->id === $order->buyer->id || $user->can('create foreign complaint');
     }
 
     /**

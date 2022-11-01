@@ -45,6 +45,21 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'edit subcategories']);
         Permission::create(['name' => 'delete subcategories']);
 
+        //Permissions addresses
+        Permission::create(['name' => 'edit foreign address']);
+        Permission::create(['name' => 'delete foreign address']);
+
+        //Permissions chats
+        Permission::create(['name' => 'view trashed messages']);
+        Permission::create(['name' => 'view foreign chat']);
+
+        //Permissions complaints
+        Permission::create(['name' => 'view complaints']);
+        Permission::create(['name' => 'take complaint']);
+        Permission::create(['name' => 'cancel complaint']);
+        Permission::create(['name' => 'refund complaint']);
+        Permission::create(['name' => 'create foreign complaint']);
+
         $roleManager = Role::create(['name' => 'role-manager']);
         $roleUser = Role::create(['name' => 'user']);
         $roleAdmin = Role::create(['name' => 'admin']);
@@ -52,12 +67,16 @@ class RoleSeeder extends Seeder
 
         $permissionsManager = Permission::where('name', 'LIKE', '%roles%')->get();
         $permissionsOwnProducts = Permission::where('name', 'LIKE', '%own products%')->get();
-        $permissionsForeignProducts = Permission::where('name', 'LIKE', '%foreign products%')->get();
-        $permissionsCategories = Permission::where('name', 'LIKE', '%categories%')->get();
-        $permissionsSubcategories = Permission::where('name', 'LIKE', '%subcategories%')->get();
+        // $permissionsForeignProducts = Permission::where('name', 'LIKE', '%foreign products%')->get();
+        // $permissionsCategories = Permission::where('name', 'LIKE', '%categories%')->get();
+        // $permissionsSubcategories = Permission::where('name', 'LIKE', '%subcategories%')->get();
+        // $permissionsSupport = Permission::where('name', 'LIKE', '%view trashed messages%')->get();
+        // $permissionsAdmin = Permission::where('name', 'LIKE', '%view foreign chat%')->get();
+
+        $allPermissions = Permission::all();
 
         $roleManager->syncPermissions($permissionsManager);
-        $roleAdmin->syncPermissions([$permissionsManager, $permissionsOwnProducts, $permissionsForeignProducts, $permissionsCategories, $permissionsSubcategories]);
+        $roleAdmin->syncPermissions($allPermissions);
         $roleUser->syncPermissions($permissionsOwnProducts);
     }
 }
