@@ -38,7 +38,7 @@ class ShippController extends Controller
         $address_id = $request->route('address_id');
 
         if ($address_id) {
-            $this->address = $this->addressRepository->getById($address_id);
+            $this->address = $this->addressRepository->getById($address_id, true);
         }
     }
 

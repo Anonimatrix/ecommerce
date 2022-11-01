@@ -69,7 +69,7 @@ class AndreaniGateway implements ShippGatewayInterface
         $product = $order->product;
         $seller = $product->user;
         $buyer = $order->buyer;
-        $buyer_address = $order->address;
+        $buyer_address = $order->address()->withTrashed()->getResults();
 
         $params = [
             'contrato' => (string) Config::get($this->baseConfigAndreaniApiPath . '.contracts.' . $shipmentType),

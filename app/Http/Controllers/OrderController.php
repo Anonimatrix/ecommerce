@@ -92,6 +92,7 @@ class OrderController extends Controller
         );
 
         $product = ProductRepository::getById($product_id);
+        $address = AddressRepository::getById($address_id);
 
         $order = $this->repository->create([
             'buyer_id' => Auth::id(),
@@ -102,7 +103,6 @@ class OrderController extends Controller
             'unit_price' => $product->price
         ]);
 
-        $address = AddressRepository::getById($address_id);
         $shipp_res = ShippingUtils::isNeededPay($shipp_type) ? $shippGateway->quote($address->postal_code, $product, $shipp_type) : null;
 
         $shipp_price = $shipp_res === null || $shipp_res['status_code'] != 200 ? null : $shipp_res['price'];

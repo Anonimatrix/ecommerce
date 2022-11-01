@@ -117,7 +117,8 @@ class CategorieController extends Controller
     public function destroy()
     {
         if (count($this->categorie->subcategories) == 0) {
-            return $this->repository->delete($this->categorie);
+            $deleted = $this->repository->delete($this->categorie);
+            return response()->json(compact('deleted'));
         }
 
         return response()->json(['status' => 'failed', 'message' => 'for destroy categorie this was to be void of subcategories'], 500);

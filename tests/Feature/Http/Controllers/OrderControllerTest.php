@@ -86,6 +86,51 @@ class OrderControllerTest extends TestCase
         $this->assertDatabaseHas('shipps', ['order_id' => 1]);
     }
 
+    public function test_view_address_trashed()
+    {
+        $order = Order::factory()->create();
+
+        $order->address->delete();
+
+        $this->assertInstanceOf(Address::class, $order->address);
+    }
+
+    public function test_view_product_trashed()
+    {
+        $order = Order::factory()->create();
+
+        $order->product->delete();
+
+        $this->assertInstanceOf(Product::class, $order->product);
+    }
+
+    public function test_store_with_trashed_address()
+    {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = User::factory()->create();
+
+        $address = Address::factory()->create();
+
+        $product = Product::factory()->create();
+
+        $data = [
+            'address_id' => $address->id,
+            'product_id' => $product->id,
+            'quantity' => $product->stock,
+            'shipp_type' => ShippTypes::TO_ADRESS
+        ];
+
+        $address->delete();
+
+        $this->actingAs($user)->post(route('orders.store'), $data)
+            ->assertStatus(404);
+
+        $this->assertDatabaseMissing('orders', ['address_id' => $data['address_id'], 'product_id' => $data['product_id']]);
+        $this->assertDatabaseMissing('shipps', ['order_id' => 1]);
+    }
+
     public function test_store_required_validation()
     {
         /**
