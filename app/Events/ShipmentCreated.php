@@ -28,6 +28,16 @@ class ShipmentCreated
         $this->order = $order;
     }
 
+    public function getRes()
+    {
+        return $this->res;
+    }
+
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
     /**
      * Get the channels the event should broadcast on.
      *

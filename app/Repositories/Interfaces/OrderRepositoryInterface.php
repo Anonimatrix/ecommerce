@@ -14,4 +14,6 @@ interface OrderRepositoryInterface extends BaseRepositoryInterface
     public function getCompletedSellsForUser(User $user);
 
     public function getRefundedBuysForUser(User $user);
+
+    public function getPendingToChangeShippStatus();
 }

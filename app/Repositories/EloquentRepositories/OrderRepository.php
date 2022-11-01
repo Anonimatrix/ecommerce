@@ -75,4 +75,15 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         return $orders;
     }
+
+    public function getPendingToChangeShippStatus()
+    {
+        $orders = $this->model
+            ->where('status', OrderStatus::PAYED)
+            ->orWhere('status', OrderStatus::SHIPPED)
+            ->orWhereHas('shipp', fn ($query) => $query->whereNotNull('tracking_id'))
+            ->get();
+
+        return $orders;
+    }
 }

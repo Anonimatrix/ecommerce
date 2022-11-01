@@ -56,4 +56,9 @@ class OrderCacheRepository extends BaseCache implements OrderRepositoryInterface
             return $this->repository->getRefundedBuysForUser($user);
         });
     }
+
+    public function getPendingToChangeShippStatus()
+    {
+        return $this->repository->getPendingToChangeShippStatus();
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\ShipmentCreated;
+use App\Listeners\ShipmentCreatedListener;
 use App\Models\Complaint;
 use App\Models\Order;
 use App\Models\Product;
@@ -24,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ShipmentCreated::class => [
+            ShipmentCreatedListener::class
+        ]
     ];
 
     /**

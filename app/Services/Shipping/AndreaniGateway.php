@@ -106,9 +106,9 @@ class AndreaniGateway implements ShippGatewayInterface
 
         $token = $this->token;
 
-        $res = Http::withHeaders(['x-authorization-token' => $token])->post($createShipmentUrl, $params)->json();;
+        $res = Http::withHeaders(['x-authorization-token' => $token])->post($createShipmentUrl, $params)->json();
 
-        ShipmentCreated::dispatch($res, $order);
+        event(new ShipmentCreated($res, $order));
 
         return $res;
     }

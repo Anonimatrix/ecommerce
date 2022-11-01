@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ShipmentCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -23,10 +24,10 @@ class ShipmentCreatedListener
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(ShipmentCreated $event)
     {
-        $res = $event->res;
-        $order = $event->order;
+        $res = $event->getRes();
+        $order = $event->getOrder();
 
         $tracking_id = $res['bultos'][0]['numeroDeEnvio'];
 
